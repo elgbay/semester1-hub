@@ -10,6 +10,7 @@
     --bg: #0f1117;
     --surface: #1a1d27;
     --surface-2: #1f2330;
+    --surface-3: #161922;
     --border: #2a2e3d;
     --border-light: #353a4d;
     --text: #e8e9ed;
@@ -49,7 +50,6 @@
 
   .container { max-width: 960px; margin: 0 auto; }
 
-  /* ── Header ── */
   header { margin-bottom: 32px; }
   .semester-tag {
     font-family: 'JetBrains Mono', monospace;
@@ -68,7 +68,7 @@
   .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--text-muted); }
   .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
 
-  /* ── Table ── */
+  /* Table */
   table.timetable {
     width: 100%; border-collapse: collapse;
     border: 1px solid var(--border); border-radius: 12px;
@@ -113,26 +113,20 @@
   .block-name { font-size: 12px; font-weight: 600; color: var(--text); }
   .block-meta { font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
 
-  /* ── Summary cards ── */
+  /* Summary */
   .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 24px; }
   .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
   .summary-card h3 { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
   .summary-card .value { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
   .summary-card .detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-  /* ── Section divider ── */
-  .section-divider {
-    margin: 48px 0 32px;
-    border: none; border-top: 1px solid var(--border);
-  }
+  .section-divider { margin: 48px 0 32px; border: none; border-top: 1px solid var(--border); }
 
-  h2 {
-    font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 6px;
-  }
+  h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 6px; }
   h2 .accent { color: var(--mat1001); }
   .section-subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 24px; }
 
-  /* ── Prep system ── */
+  /* Prep system */
   .prep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
   @media (max-width: 640px) { .prep-grid { grid-template-columns: 1fr; } }
 
@@ -151,8 +145,7 @@
 
   .prep-card .track-label {
     font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
-    margin-bottom: 8px;
+    font-weight: 500; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;
   }
   .prep-card.foundations .track-label { color: var(--edu1005); }
   .prep-card.modelling-a .track-label { color: var(--mat1001); }
@@ -162,7 +155,6 @@
   .prep-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
   .prep-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
-  /* ── The Rule ── */
   .rule-box {
     background: var(--accent-bg); border: 1px solid var(--accent-border);
     border-radius: 10px; padding: 18px 20px; margin-bottom: 32px;
@@ -173,9 +165,7 @@
     color: var(--accent); margin-bottom: 8px;
   }
   .rule-box p { font-size: 13px; color: var(--text); line-height: 1.6; }
-  .rule-box strong { color: var(--text); }
 
-  /* ── Classroom note ── */
   .classroom-note {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 10px; padding: 18px 20px; margin-bottom: 32px;
@@ -184,16 +174,14 @@
   .classroom-note p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
   .classroom-note strong { color: var(--text); }
 
-  /* ── Weekly tracker ── */
+  /* Tracker */
   .tracker-header {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
   }
   .tracker-header h3 { font-size: 16px; font-weight: 600; }
 
-  .week-selector {
-    display: flex; align-items: center; gap: 8px;
-  }
+  .week-selector { display: flex; align-items: center; gap: 8px; }
   .week-selector label { font-size: 12px; color: var(--text-muted); }
   .week-selector select {
     background: var(--surface-2); border: 1px solid var(--border);
@@ -202,18 +190,24 @@
   }
   .week-selector select:focus { outline: none; border-color: var(--accent); }
 
-  .tracker-grid {
-    display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px;
-  }
+  .tracker-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 20px; }
 
-  .tracker-row {
+  /* Task row */
+  .task-item {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; padding: 14px 16px;
-    display: flex; align-items: center; gap: 14px;
+    border-radius: 8px; overflow: hidden;
     transition: border-color 0.2s;
   }
-  .tracker-row.checked { border-color: rgba(52, 211, 153, 0.3); }
-  .tracker-row.checked .tracker-label { text-decoration: line-through; color: var(--text-dim); }
+  .task-item.checked { border-color: rgba(52, 211, 153, 0.3); }
+  .task-item.has-note { border-color: var(--border-light); }
+  .task-item.expanded { border-color: var(--accent-border); }
+
+  .task-main {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .task-main:hover { background: var(--surface-2); }
 
   .tracker-check {
     width: 20px; height: 20px; border-radius: 5px;
@@ -223,11 +217,24 @@
     transition: all 0.15s; color: transparent; font-size: 12px;
   }
   .tracker-check:hover { border-color: var(--green); }
-  .tracker-check.active {
-    background: var(--green); border-color: var(--green); color: var(--bg);
-  }
+  .tracker-check.active { background: var(--green); border-color: var(--green); color: var(--bg); }
 
-  .tracker-label { font-size: 13px; font-weight: 500; flex: 1; }
+  .tracker-label { font-size: 13px; font-weight: 500; flex: 1; transition: all 0.2s; }
+  .task-item.checked .tracker-label { text-decoration: line-through; color: var(--text-dim); }
+
+  .note-indicator {
+    font-size: 10px; color: var(--yellow); margin-left: -6px;
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .task-item.has-note .note-indicator { opacity: 1; }
+
+  .expand-arrow {
+    font-size: 10px; color: var(--text-dim); transition: transform 0.2s;
+    flex-shrink: 0; width: 16px; text-align: center;
+  }
+  .task-item.expanded .expand-arrow { transform: rotate(90deg); }
+
   .tracker-tag {
     font-family: 'JetBrains Mono', monospace; font-size: 9px;
     font-weight: 500; letter-spacing: 0.5px; padding: 3px 8px;
@@ -239,7 +246,35 @@
   .tag-lc01 { background: rgba(251, 146, 60, 0.12); color: var(--edu2005); }
   .tag-class { background: rgba(52, 211, 153, 0.08); color: var(--green); border: 1px solid rgba(52, 211, 153, 0.2); }
 
-  /* ── Notes area ── */
+  /* Expandable notes panel */
+  .task-notes {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.25s ease, padding 0.25s ease;
+    background: var(--surface-3);
+    border-top: 0px solid var(--border);
+  }
+  .task-item.expanded .task-notes {
+    max-height: 200px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .task-note-input {
+    width: 100%; padding: 10px 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 12px; line-height: 1.5; resize: none;
+    min-height: 60px; transition: border-color 0.2s;
+  }
+  .task-note-input:focus { outline: none; border-color: var(--accent); }
+  .task-note-input::placeholder { color: var(--text-dim); }
+
+  .note-hint {
+    font-size: 10px; color: var(--text-dim); margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Week notes */
   .notes-section { margin-top: 20px; }
   .notes-section label {
     display: block; font-size: 12px; font-weight: 600;
@@ -264,26 +299,24 @@
   }
   .save-status.saved { color: var(--green); }
 
-  /* ── Confidence rating ── */
-  .confidence-row {
-    display: flex; align-items: center; gap: 8px; margin-top: 8px;
+  /* Action items summary */
+  .action-items {
+    margin-top: 24px; padding: 16px 18px;
+    background: rgba(251, 191, 36, 0.06); border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 10px; display: none;
   }
-  .conf-btn {
-    width: 28px; height: 28px; border-radius: 6px;
-    border: 2px solid var(--border); background: transparent;
-    cursor: pointer; font-size: 14px; transition: all 0.15s;
-    display: flex; align-items: center; justify-content: center;
+  .action-items.visible { display: block; }
+  .action-items h4 {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--yellow); margin-bottom: 10px;
   }
-  .conf-btn:hover { transform: scale(1.1); }
-  .conf-btn.green { border-color: var(--green); }
-  .conf-btn.green.active { background: var(--green); }
-  .conf-btn.yellow { border-color: var(--yellow); }
-  .conf-btn.yellow.active { background: var(--yellow); }
-  .conf-btn.red { border-color: var(--red); }
-  .conf-btn.red.active { background: var(--red); }
-  .conf-label { font-size: 11px; color: var(--text-dim); margin-left: 4px; }
+  .action-item {
+    font-size: 12px; color: var(--text-muted); padding: 4px 0;
+    line-height: 1.5;
+  }
+  .action-item strong { color: var(--text); font-weight: 600; }
 
-  /* ── Footer ── */
   .footer {
     margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
     text-align: center; color: var(--text-dim); font-size: 11px;
@@ -294,7 +327,7 @@
 <body>
 <div class="container">
 
-  <!-- ═══════════════ TIMETABLE ═══════════════ -->
+  <!-- TIMETABLE -->
   <header>
     <div class="semester-tag">Semester 1 · 2025 · Bundoora Campus</div>
     <h1>Weekly Timetable</h1>
@@ -370,7 +403,7 @@
     <div class="summary-card"><h3>Free Days</h3><div class="value">Wed & Fri</div><div class="detail">Plus weekends</div></div>
   </div>
 
-  <!-- ═══════════════ MAT1001 PREP SYSTEM ═══════════════ -->
+  <!-- MAT1001 PREP SYSTEM -->
   <hr class="section-divider">
 
   <h2><span class="accent">MAT1001</span> Prep System</h2>
@@ -386,22 +419,22 @@
     <div class="prep-card foundations">
       <div class="track-label">PR01 · Foundations · Tue 10am</div>
       <h4>Task 1: Foundations Reading Qs</h4>
-      <p>Do the reading questions cold. Sort them: ✅ got it, 🟡 shaky, 🔴 stuck. List the weak spots. This is your warm-up — should feel manageable.</p>
+      <p>Do the reading questions cold. Sort them: ✅ got it, 🟡 shaky, 🔴 stuck. List the weak spots. This is your warm-up.</p>
     </div>
     <div class="prep-card modelling-a">
       <div class="track-label">PR02 · Modelling A · Tue 1pm</div>
       <h4>Task 2: Lecture 1A Notes → Quiz</h4>
-      <p>Read the Modelling Tools Part A lecture notes. Upload the PDF to Claude and get a quiz with answers generated. Test yourself.</p>
+      <p>Read the Modelling Tools Part A lecture notes. Upload the PDF to Claude and get a quiz with answers generated.</p>
     </div>
     <div class="prep-card modelling-b">
       <div class="track-label">PR03 · Modelling B · Thu 10am</div>
       <h4>Task 3: Lecture 1B Notes → Quiz</h4>
-      <p>Read the Part B lecture notes. Upload to Claude for a quiz with worked solutions. Same process, different content stream.</p>
+      <p>Read the Part B lecture notes. Upload to Claude for a quiz with worked solutions.</p>
     </div>
     <div class="prep-card lab">
       <div class="track-label">LC01 · MATLAB Lab · Thu 11am</div>
       <h4>Practice Sheets → Similar Qs</h4>
-      <p>Upload the practice class PDFs to Claude. Ask for similar-level questions — <strong>no spoilers</strong> on the actual problems. Get reps at the right difficulty.</p>
+      <p>Upload the practice class PDFs to Claude. Ask for similar-level questions — <strong>no spoilers</strong> on the actual problems.</p>
     </div>
   </div>
 
@@ -409,7 +442,7 @@
     <p><strong>Then go to class.</strong> You need the reps of being in a classroom, watching how the tutor explains things, solving problems in real time. You can't just sit in your room doing quizzes. See how they teach — you're not just learning maths, you're observing pedagogy.</p>
   </div>
 
-  <!-- ═══════════════ WEEKLY TRACKER ═══════════════ -->
+  <!-- WEEKLY TRACKER -->
   <hr class="section-divider">
 
   <div class="tracker-header">
@@ -422,97 +455,97 @@
 
   <div class="tracker-grid" id="trackerGrid"></div>
 
+  <div class="action-items" id="actionItems">
+    <h4>⚡ Notes to Action</h4>
+    <div id="actionList"></div>
+  </div>
+
   <div class="notes-section">
-    <label>Week Notes & Reflections</label>
-    <textarea class="notes-textarea" id="weekNotes" placeholder="How did the week go? What clicked? What needs more work? Confidence levels after class vs before?"></textarea>
-    <div class="save-status" id="saveStatus">Changes save automatically</div>
+    <label>Week Overview & Reflections</label>
+    <textarea class="notes-textarea" id="weekNotes" placeholder="Big picture: how did the week go overall? What shifted in your understanding?"></textarea>
+    <div class="save-status" id="saveStatus">All changes save to this browser automatically</div>
   </div>
 
   <div class="footer">Semester 1 · 2025 · Built for focus</div>
 </div>
 
 <script>
-  // ── Storage helpers (works in Claude artifacts via window.storage, falls back for external hosting) ──
-  const storage = {
-    async get(key) {
-      try {
-        if (window.storage) {
-          const result = await window.storage.get(key);
-          return result ? JSON.parse(result.value) : null;
-        }
-        return null;
-      } catch { return null; }
-    },
-    async set(key, value) {
-      try {
-        if (window.storage) {
-          await window.storage.set(key, JSON.stringify(value));
-          return true;
-        }
-        return false;
-      } catch { return false; }
-    }
-  };
+  // ── Storage via localStorage ──
+  function load(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  }
+  function save(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+  }
 
-  // ── Task definitions ──
+  // ── Tasks ──
   const tasks = [
-    { id: 'foundations-reading', label: 'Read Foundations material', tag: 'PR01', tagClass: 'tag-pr01' },
-    { id: 'foundations-qs', label: 'Do Foundations Qs cold → sort ✅🟡🔴', tag: 'PR01', tagClass: 'tag-pr01' },
-    { id: 'modelling-a-read', label: 'Read Modelling Part A lecture notes', tag: 'PR02', tagClass: 'tag-pr02' },
-    { id: 'modelling-a-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR02', tagClass: 'tag-pr02' },
-    { id: 'modelling-b-read', label: 'Read Modelling Part B lecture notes', tag: 'PR03', tagClass: 'tag-pr03' },
-    { id: 'modelling-b-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR03', tagClass: 'tag-pr03' },
-    { id: 'practice-sheets', label: 'Upload practice sheets → get similar-level Qs', tag: 'LC01', tagClass: 'tag-lc01' },
-    { id: 'attend-pr01', label: 'Attend PR01 Foundations class', tag: 'CLASS', tagClass: 'tag-class' },
-    { id: 'attend-pr02', label: 'Attend PR02 Modelling A class', tag: 'CLASS', tagClass: 'tag-class' },
-    { id: 'attend-pr03', label: 'Attend PR03 Modelling B class', tag: 'CLASS', tagClass: 'tag-class' },
-    { id: 'attend-lab', label: 'Attend MATLAB Lab', tag: 'CLASS', tagClass: 'tag-class' },
+    { id: 'foundations-reading', label: 'Read Foundations material', tag: 'PR01', tagClass: 'tag-pr01', placeholder: 'How was the reading? Any concepts unclear?' },
+    { id: 'foundations-qs', label: 'Do Foundations Qs cold → sort ✅🟡🔴', tag: 'PR01', tagClass: 'tag-pr01', placeholder: 'Which Qs were ✅🟡🔴? What topics need work?' },
+    { id: 'modelling-a-read', label: 'Read Modelling Part A lecture notes', tag: 'PR02', tagClass: 'tag-pr02', placeholder: 'Key concepts? Anything confusing?' },
+    { id: 'modelling-a-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR02', tagClass: 'tag-pr02', placeholder: 'Quiz score? Which areas tripped you up?' },
+    { id: 'modelling-b-read', label: 'Read Modelling Part B lecture notes', tag: 'PR03', tagClass: 'tag-pr03', placeholder: 'Key concepts? Anything confusing?' },
+    { id: 'modelling-b-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR03', tagClass: 'tag-pr03', placeholder: 'Quiz score? Which areas tripped you up?' },
+    { id: 'practice-sheets', label: 'Upload practice sheets → get similar-level Qs', tag: 'LC01', tagClass: 'tag-lc01', placeholder: 'How did the practice Qs go? Gaps?' },
+    { id: 'attend-pr01', label: 'Attend PR01 Foundations class', tag: 'CLASS', tagClass: 'tag-class', placeholder: 'What did the tutor cover? Anything click in class that didn\'t before?' },
+    { id: 'attend-pr02', label: 'Attend PR02 Modelling A class', tag: 'CLASS', tagClass: 'tag-class', placeholder: 'What did the tutor cover? Teaching techniques you noticed?' },
+    { id: 'attend-pr03', label: 'Attend PR03 Modelling B class', tag: 'CLASS', tagClass: 'tag-class', placeholder: 'What did the tutor cover? Any pedagogy observations?' },
+    { id: 'attend-lab', label: 'Attend MATLAB Lab', tag: 'CLASS', tagClass: 'tag-class', placeholder: 'MATLAB concepts covered? Any issues with code?' },
   ];
 
-  // ── State ──
   let currentWeek = 1;
-  let allData = {};
 
-  function getWeekKey(week) { return `mat1001-week-${week}`; }
+  function weekKey(w) { return `mat1001-w${w}`; }
 
-  function defaultWeekData() {
-    const checks = {};
-    tasks.forEach(t => { checks[t.id] = false; });
-    return { checks, notes: '' };
+  function getWeekData(w) {
+    const d = load(weekKey(w));
+    if (d) return d;
+    const fresh = { checks: {}, notes: {}, weekNotes: '' };
+    tasks.forEach(t => { fresh.checks[t.id] = false; fresh.notes[t.id] = ''; });
+    return fresh;
   }
+
+  function saveWeek(w, data) { save(weekKey(w), data); }
 
   // ── Build week selector ──
   const weekSelect = document.getElementById('weekSelect');
   for (let i = 1; i <= 12; i++) {
     const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = `Week ${i}`;
+    opt.value = i; opt.textContent = `Week ${i}`;
     weekSelect.appendChild(opt);
   }
-  weekSelect.addEventListener('change', async () => {
-    await saveCurrentWeek();
+  weekSelect.addEventListener('change', () => {
     currentWeek = parseInt(weekSelect.value);
-    await loadWeek(currentWeek);
+    render();
   });
 
-  // ── Render tracker ──
-  function renderTracker(data) {
+  // ── Render ──
+  function render() {
+    const data = getWeekData(currentWeek);
     const grid = document.getElementById('trackerGrid');
     grid.innerHTML = '';
 
     tasks.forEach(task => {
-      const row = document.createElement('div');
-      row.className = 'tracker-row' + (data.checks[task.id] ? ' checked' : '');
+      const item = document.createElement('div');
+      item.className = 'task-item';
+      if (data.checks[task.id]) item.classList.add('checked');
+      if (data.notes[task.id]) item.classList.add('has-note');
+
+      // Main row
+      const main = document.createElement('div');
+      main.className = 'task-main';
 
       const check = document.createElement('button');
       check.className = 'tracker-check' + (data.checks[task.id] ? ' active' : '');
       check.textContent = data.checks[task.id] ? '✓' : '';
-      check.onclick = async () => {
+      check.onclick = (e) => {
+        e.stopPropagation();
         data.checks[task.id] = !data.checks[task.id];
-        check.classList.toggle('active');
-        check.textContent = data.checks[task.id] ? '✓' : '';
-        row.classList.toggle('checked');
-        await saveCurrentWeek();
+        saveWeek(currentWeek, data);
+        render();
         flashSaved();
       };
 
@@ -520,30 +553,96 @@
       label.className = 'tracker-label';
       label.textContent = task.label;
 
+      const noteInd = document.createElement('span');
+      noteInd.className = 'note-indicator';
+      noteInd.textContent = '● note';
+
+      const arrow = document.createElement('span');
+      arrow.className = 'expand-arrow';
+      arrow.textContent = '▶';
+
       const tag = document.createElement('span');
       tag.className = 'tracker-tag ' + task.tagClass;
       tag.textContent = task.tag;
 
-      row.appendChild(check);
-      row.appendChild(label);
-      row.appendChild(tag);
-      grid.appendChild(row);
+      main.appendChild(check);
+      main.appendChild(label);
+      main.appendChild(noteInd);
+      main.appendChild(tag);
+      main.appendChild(arrow);
+
+      // Notes panel
+      const notesPanel = document.createElement('div');
+      notesPanel.className = 'task-notes';
+
+      const noteInput = document.createElement('textarea');
+      noteInput.className = 'task-note-input';
+      noteInput.placeholder = task.placeholder;
+      noteInput.value = data.notes[task.id] || '';
+      noteInput.rows = 3;
+      noteInput.onclick = (e) => e.stopPropagation();
+      noteInput.oninput = () => {
+        data.notes[task.id] = noteInput.value;
+        saveWeek(currentWeek, data);
+        item.classList.toggle('has-note', !!noteInput.value);
+        flashSaved();
+        updateActionItems(data);
+      };
+
+      const hint = document.createElement('div');
+      hint.className = 'note-hint';
+      hint.textContent = 'Saves automatically · Action items from notes appear below';
+
+      notesPanel.appendChild(noteInput);
+      notesPanel.appendChild(hint);
+
+      // Toggle expand
+      main.onclick = () => {
+        item.classList.toggle('expanded');
+        if (item.classList.contains('expanded')) {
+          setTimeout(() => noteInput.focus(), 100);
+        }
+      };
+
+      item.appendChild(main);
+      item.appendChild(notesPanel);
+      grid.appendChild(item);
     });
 
-    document.getElementById('weekNotes').value = data.notes || '';
+    document.getElementById('weekNotes').value = data.weekNotes || '';
+    updateActionItems(data);
   }
 
-  // ── Notes auto-save ──
+  // ── Action items summary ──
+  function updateActionItems(data) {
+    const container = document.getElementById('actionItems');
+    const list = document.getElementById('actionList');
+    list.innerHTML = '';
+
+    let hasNotes = false;
+    tasks.forEach(task => {
+      if (data.notes[task.id] && data.notes[task.id].trim()) {
+        hasNotes = true;
+        const div = document.createElement('div');
+        div.className = 'action-item';
+        div.innerHTML = `<strong>${task.tag}:</strong> ${data.notes[task.id]}`;
+        list.appendChild(div);
+      }
+    });
+
+    container.classList.toggle('visible', hasNotes);
+  }
+
+  // ── Week notes ──
   let saveTimeout;
   document.getElementById('weekNotes').addEventListener('input', () => {
     clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(async () => {
-      const data = allData[getWeekKey(currentWeek)] || defaultWeekData();
-      data.notes = document.getElementById('weekNotes').value;
-      allData[getWeekKey(currentWeek)] = data;
-      await saveCurrentWeek();
+    saveTimeout = setTimeout(() => {
+      const data = getWeekData(currentWeek);
+      data.weekNotes = document.getElementById('weekNotes').value;
+      saveWeek(currentWeek, data);
       flashSaved();
-    }, 600);
+    }, 400);
   });
 
   function flashSaved() {
@@ -551,32 +650,13 @@
     el.textContent = '✓ Saved';
     el.classList.add('saved');
     setTimeout(() => {
-      el.textContent = 'Changes save automatically';
+      el.textContent = 'All changes save to this browser automatically';
       el.classList.remove('saved');
     }, 2000);
   }
 
-  // ── Load & save ──
-  async function loadWeek(week) {
-    const key = getWeekKey(week);
-    let data = allData[key];
-    if (!data) {
-      data = await storage.get(key) || defaultWeekData();
-      allData[key] = data;
-    }
-    renderTracker(data);
-  }
-
-  async function saveCurrentWeek() {
-    const key = getWeekKey(currentWeek);
-    const data = allData[key] || defaultWeekData();
-    data.notes = document.getElementById('weekNotes').value;
-    allData[key] = data;
-    await storage.set(key, data);
-  }
-
   // ── Init ──
-  loadWeek(1);
+  render();
 </script>
 </body>
 </html>
