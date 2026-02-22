@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semester 1 — Ro's Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface-2: #1f2330;
+    --border: #2a2e3d;
+    --border-light: #353a4d;
+    --text: #e8e9ed;
+    --text-muted: #8b8fa3;
+    --text-dim: #5a5e72;
+    --accent: #6366f1;
+    --accent-bg: rgba(99, 102, 241, 0.08);
+    --accent-border: rgba(99, 102, 241, 0.25);
+
+    --edu1005: #f97066;
+    --edu1005-bg: rgba(249, 112, 102, 0.09);
+    --edu1005-border: rgba(249, 112, 102, 0.28);
+    --edu2005: #fb923c;
+    --edu2005-bg: rgba(251, 146, 60, 0.09);
+    --edu2005-border: rgba(251, 146, 60, 0.28);
+    --mat1001: #34d399;
+    --mat1001-bg: rgba(52, 211, 153, 0.09);
+    --mat1001-border: rgba(52, 211, 153, 0.28);
+    --psy1bam: #818cf8;
+    --psy1bam-bg: rgba(129, 140, 248, 0.09);
+    --psy1bam-border: rgba(129, 140, 248, 0.28);
+
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --red: #f87171;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 40px 24px;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; }
+
+  /* ── Header ── */
+  header { margin-bottom: 32px; }
+  .semester-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 8px;
+  }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .subtitle { color: var(--text-muted); font-size: 14px; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    margin-top: 20px; padding: 14px 18px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--text-muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ── Table ── */
+  table.timetable {
+    width: 100%; border-collapse: collapse;
+    border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; table-layout: fixed;
+  }
+  .timetable thead th {
+    background: var(--surface); padding: 14px 16px;
+    font-weight: 600; font-size: 13px; letter-spacing: 0.3px;
+    text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
+  }
+  .timetable thead th:first-child { width: 64px; color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  .timetable thead th:last-child { border-right: none; }
+  .timetable td {
+    border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
+    padding: 0; vertical-align: top; height: 64px;
+  }
+  .timetable td:last-child { border-right: none; }
+  .timetable tbody tr:last-child td { border-bottom: none; }
+  td.time-col {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--text-dim); text-align: center; vertical-align: top;
+    padding-top: 10px; background: var(--surface); width: 64px; border-right: 1px solid var(--border);
+  }
+
+  .block {
+    border-radius: 8px; padding: 10px 12px; margin: 4px;
+    height: calc(100% - 8px); display: flex; flex-direction: column;
+    justify-content: center; gap: 2px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .block:hover { transform: scale(1.015); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .block.edu1005 { background: var(--edu1005-bg); border: 1px solid var(--edu1005-border); }
+  .block.edu2005 { background: var(--edu2005-bg); border: 1px solid var(--edu2005-border); }
+  .block.mat1001 { background: var(--mat1001-bg); border: 1px solid var(--mat1001-border); }
+  .block.psy1bam { background: var(--psy1bam-bg); border: 1px solid var(--psy1bam-border); }
+
+  .block-code { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.5px; }
+  .edu1005 .block-code { color: var(--edu1005); }
+  .edu2005 .block-code { color: var(--edu2005); }
+  .mat1001 .block-code { color: var(--mat1001); }
+  .psy1bam .block-code { color: var(--psy1bam); }
+  .block-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .block-meta { font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Summary cards ── */
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 24px; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .summary-card h3 { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+  .summary-card .value { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .summary-card .detail { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── Section divider ── */
+  .section-divider {
+    margin: 48px 0 32px;
+    border: none; border-top: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 6px;
+  }
+  h2 .accent { color: var(--mat1001); }
+  .section-subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 24px; }
+
+  /* ── Prep system ── */
+  .prep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 640px) { .prep-grid { grid-template-columns: 1fr; } }
+
+  .prep-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 20px; position: relative; overflow: hidden;
+  }
+  .prep-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; border-radius: 10px 10px 0 0;
+  }
+  .prep-card.foundations::before { background: var(--edu1005); }
+  .prep-card.modelling-a::before { background: var(--mat1001); }
+  .prep-card.modelling-b::before { background: var(--psy1bam); }
+  .prep-card.lab::before { background: var(--edu2005); }
+
+  .prep-card .track-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .prep-card.foundations .track-label { color: var(--edu1005); }
+  .prep-card.modelling-a .track-label { color: var(--mat1001); }
+  .prep-card.modelling-b .track-label { color: var(--psy1bam); }
+  .prep-card.lab .track-label { color: var(--edu2005); }
+
+  .prep-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .prep-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* ── The Rule ── */
+  .rule-box {
+    background: var(--accent-bg); border: 1px solid var(--accent-border);
+    border-radius: 10px; padding: 18px 20px; margin-bottom: 32px;
+  }
+  .rule-box .rule-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .rule-box p { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .rule-box strong { color: var(--text); }
+
+  /* ── Classroom note ── */
+  .classroom-note {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 20px; margin-bottom: 32px;
+    border-left: 3px solid var(--green);
+  }
+  .classroom-note p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .classroom-note strong { color: var(--text); }
+
+  /* ── Weekly tracker ── */
+  .tracker-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+  }
+  .tracker-header h3 { font-size: 16px; font-weight: 600; }
+
+  .week-selector {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .week-selector label { font-size: 12px; color: var(--text-muted); }
+  .week-selector select {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 12px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
+  }
+  .week-selector select:focus { outline: none; border-color: var(--accent); }
+
+  .tracker-grid {
+    display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px;
+  }
+
+  .tracker-row {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px;
+    transition: border-color 0.2s;
+  }
+  .tracker-row.checked { border-color: rgba(52, 211, 153, 0.3); }
+  .tracker-row.checked .tracker-label { text-decoration: line-through; color: var(--text-dim); }
+
+  .tracker-check {
+    width: 20px; height: 20px; border-radius: 5px;
+    border: 2px solid var(--border-light); background: transparent;
+    cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; color: transparent; font-size: 12px;
+  }
+  .tracker-check:hover { border-color: var(--green); }
+  .tracker-check.active {
+    background: var(--green); border-color: var(--green); color: var(--bg);
+  }
+
+  .tracker-label { font-size: 13px; font-weight: 500; flex: 1; }
+  .tracker-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    font-weight: 500; letter-spacing: 0.5px; padding: 3px 8px;
+    border-radius: 4px; flex-shrink: 0;
+  }
+  .tag-pr01 { background: rgba(249, 112, 102, 0.12); color: var(--edu1005); }
+  .tag-pr02 { background: rgba(52, 211, 153, 0.12); color: var(--mat1001); }
+  .tag-pr03 { background: rgba(129, 140, 248, 0.12); color: var(--psy1bam); }
+  .tag-lc01 { background: rgba(251, 146, 60, 0.12); color: var(--edu2005); }
+  .tag-class { background: rgba(52, 211, 153, 0.08); color: var(--green); border: 1px solid rgba(52, 211, 153, 0.2); }
+
+  /* ── Notes area ── */
+  .notes-section { margin-top: 20px; }
+  .notes-section label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: var(--text-muted); margin-bottom: 8px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .notes-textarea {
+    width: 100%; min-height: 120px; padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; line-height: 1.6; resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .notes-textarea:focus { outline: none; border-color: var(--accent); }
+  .notes-textarea::placeholder { color: var(--text-dim); }
+
+  .save-status {
+    font-size: 11px; color: var(--text-dim); margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: color 0.3s;
+  }
+  .save-status.saved { color: var(--green); }
+
+  /* ── Confidence rating ── */
+  .confidence-row {
+    display: flex; align-items: center; gap: 8px; margin-top: 8px;
+  }
+  .conf-btn {
+    width: 28px; height: 28px; border-radius: 6px;
+    border: 2px solid var(--border); background: transparent;
+    cursor: pointer; font-size: 14px; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .conf-btn:hover { transform: scale(1.1); }
+  .conf-btn.green { border-color: var(--green); }
+  .conf-btn.green.active { background: var(--green); }
+  .conf-btn.yellow { border-color: var(--yellow); }
+  .conf-btn.yellow.active { background: var(--yellow); }
+  .conf-btn.red { border-color: var(--red); }
+  .conf-btn.red.active { background: var(--red); }
+  .conf-label { font-size: 11px; color: var(--text-dim); margin-left: 4px; }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+    text-align: center; color: var(--text-dim); font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══════════════ TIMETABLE ═══════════════ -->
+  <header>
+    <div class="semester-tag">Semester 1 · 2025 · Bundoora Campus</div>
+    <h1>Weekly Timetable</h1>
+    <p class="subtitle">4 subjects · 3 active days · 10 contact hours/week</p>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--edu1005)"></div>EDU1005 — Planning for Learning</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--edu2005)"></div>EDU2005 — Aboriginal & TSI Education</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--mat1001)"></div>MAT1001 — Tools for Modelling</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--psy1bam)"></div>PSY1BAM — Psychology: Brain & Mind</div>
+    </div>
+  </header>
+
+  <table class="timetable">
+    <thead>
+      <tr><th>Time</th><th>Monday</th><th>Tuesday</th><th>Thursday</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="time-col" rowspan="2">9:00</td>
+        <td rowspan="2" style="height:128px;">
+          <div class="block edu1005" style="height:calc(100% - 8px)">
+            <span class="block-code">EDU1005</span>
+            <span class="block-name">Tutorial</span>
+            <span class="block-meta">9:00–11:00 · ED1-220</span>
+          </div>
+        </td>
+        <td></td><td></td>
+      </tr>
+      <tr><td></td><td></td></tr>
+      <tr>
+        <td class="time-col">10:00</td>
+        <td></td>
+        <td><div class="block mat1001"><span class="block-code">MAT1001</span><span class="block-name">Foundations (PR01)</span><span class="block-meta">10:00–11:00 · ED2-212</span></div></td>
+        <td><div class="block mat1001"><span class="block-code">MAT1001</span><span class="block-name">Modelling B (PR03)</span><span class="block-meta">10:00–11:00 · ED2-212</span></div></td>
+      </tr>
+      <tr>
+        <td class="time-col">11:00</td>
+        <td></td><td></td>
+        <td><div class="block mat1001"><span class="block-code">MAT1001</span><span class="block-name">MATLAB Lab</span><span class="block-meta">11:00–12:00 · PS1-321</span></div></td>
+      </tr>
+      <tr><td class="time-col">12:00</td><td></td><td></td><td></td></tr>
+      <tr>
+        <td class="time-col">13:00</td>
+        <td></td>
+        <td><div class="block mat1001"><span class="block-code">MAT1001</span><span class="block-name">Modelling A (PR02)</span><span class="block-meta">13:00–14:00 · PS2-313</span></div></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="time-col" rowspan="2">14:00</td>
+        <td rowspan="2"></td>
+        <td rowspan="2" style="height:128px;">
+          <div class="block edu2005" style="height:calc(100% - 8px)">
+            <span class="block-code">EDU2005</span>
+            <span class="block-name">Tutorial</span>
+            <span class="block-meta">14:00–16:00 · ED1-109</span>
+          </div>
+        </td>
+        <td rowspan="2"></td>
+      </tr>
+      <tr></tr>
+      <tr>
+        <td class="time-col">16:00</td>
+        <td><div class="block psy1bam"><span class="block-code">PSY1BAM</span><span class="block-name">Tutorial</span><span class="block-meta">16:00–17:00 · BS2-183</span></div></td>
+        <td></td><td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="summary">
+    <div class="summary-card"><h3>Subjects</h3><div class="value">4</div><div class="detail">EDU1005 · EDU2005 · MAT1001 · PSY1BAM</div></div>
+    <div class="summary-card"><h3>Weekly Hours</h3><div class="value">10 hrs</div><div class="detail">Mon 3h · Tue 5h · Thu 2h</div></div>
+    <div class="summary-card"><h3>Dates</h3><div class="value">2 Mar – 28 May</div><div class="detail">Mid-sem break varies by subject</div></div>
+    <div class="summary-card"><h3>Free Days</h3><div class="value">Wed & Fri</div><div class="detail">Plus weekends</div></div>
+  </div>
+
+  <!-- ═══════════════ MAT1001 PREP SYSTEM ═══════════════ -->
+  <hr class="section-divider">
+
+  <h2><span class="accent">MAT1001</span> Prep System</h2>
+  <p class="section-subtitle">4 tracks per week. No more haphazard flitting — concrete steps, done in order.</p>
+
+  <div class="rule-box">
+    <div class="rule-label">The Problem & The Fix</div>
+    <p>Old mode: jump between tasks randomly, never finishing, never building depth.<br>
+    <strong>New mode:</strong> Follow the sequence below before each week's classes. One thing at a time. Finish it. Move on.</p>
+  </div>
+
+  <div class="prep-grid">
+    <div class="prep-card foundations">
+      <div class="track-label">PR01 · Foundations · Tue 10am</div>
+      <h4>Task 1: Foundations Reading Qs</h4>
+      <p>Do the reading questions cold. Sort them: ✅ got it, 🟡 shaky, 🔴 stuck. List the weak spots. This is your warm-up — should feel manageable.</p>
+    </div>
+    <div class="prep-card modelling-a">
+      <div class="track-label">PR02 · Modelling A · Tue 1pm</div>
+      <h4>Task 2: Lecture 1A Notes → Quiz</h4>
+      <p>Read the Modelling Tools Part A lecture notes. Upload the PDF to Claude and get a quiz with answers generated. Test yourself.</p>
+    </div>
+    <div class="prep-card modelling-b">
+      <div class="track-label">PR03 · Modelling B · Thu 10am</div>
+      <h4>Task 3: Lecture 1B Notes → Quiz</h4>
+      <p>Read the Part B lecture notes. Upload to Claude for a quiz with worked solutions. Same process, different content stream.</p>
+    </div>
+    <div class="prep-card lab">
+      <div class="track-label">LC01 · MATLAB Lab · Thu 11am</div>
+      <h4>Practice Sheets → Similar Qs</h4>
+      <p>Upload the practice class PDFs to Claude. Ask for similar-level questions — <strong>no spoilers</strong> on the actual problems. Get reps at the right difficulty.</p>
+    </div>
+  </div>
+
+  <div class="classroom-note">
+    <p><strong>Then go to class.</strong> You need the reps of being in a classroom, watching how the tutor explains things, solving problems in real time. You can't just sit in your room doing quizzes. See how they teach — you're not just learning maths, you're observing pedagogy.</p>
+  </div>
+
+  <!-- ═══════════════ WEEKLY TRACKER ═══════════════ -->
+  <hr class="section-divider">
+
+  <div class="tracker-header">
+    <h3>Weekly Progress Tracker</h3>
+    <div class="week-selector">
+      <label>Week:</label>
+      <select id="weekSelect"></select>
+    </div>
+  </div>
+
+  <div class="tracker-grid" id="trackerGrid"></div>
+
+  <div class="notes-section">
+    <label>Week Notes & Reflections</label>
+    <textarea class="notes-textarea" id="weekNotes" placeholder="How did the week go? What clicked? What needs more work? Confidence levels after class vs before?"></textarea>
+    <div class="save-status" id="saveStatus">Changes save automatically</div>
+  </div>
+
+  <div class="footer">Semester 1 · 2025 · Built for focus</div>
+</div>
+
+<script>
+  // ── Storage helpers (works in Claude artifacts via window.storage, falls back for external hosting) ──
+  const storage = {
+    async get(key) {
+      try {
+        if (window.storage) {
+          const result = await window.storage.get(key);
+          return result ? JSON.parse(result.value) : null;
+        }
+        return null;
+      } catch { return null; }
+    },
+    async set(key, value) {
+      try {
+        if (window.storage) {
+          await window.storage.set(key, JSON.stringify(value));
+          return true;
+        }
+        return false;
+      } catch { return false; }
+    }
+  };
+
+  // ── Task definitions ──
+  const tasks = [
+    { id: 'foundations-reading', label: 'Read Foundations material', tag: 'PR01', tagClass: 'tag-pr01' },
+    { id: 'foundations-qs', label: 'Do Foundations Qs cold → sort ✅🟡🔴', tag: 'PR01', tagClass: 'tag-pr01' },
+    { id: 'modelling-a-read', label: 'Read Modelling Part A lecture notes', tag: 'PR02', tagClass: 'tag-pr02' },
+    { id: 'modelling-a-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR02', tagClass: 'tag-pr02' },
+    { id: 'modelling-b-read', label: 'Read Modelling Part B lecture notes', tag: 'PR03', tagClass: 'tag-pr03' },
+    { id: 'modelling-b-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR03', tagClass: 'tag-pr03' },
+    { id: 'practice-sheets', label: 'Upload practice sheets → get similar-level Qs', tag: 'LC01', tagClass: 'tag-lc01' },
+    { id: 'attend-pr01', label: 'Attend PR01 Foundations class', tag: 'CLASS', tagClass: 'tag-class' },
+    { id: 'attend-pr02', label: 'Attend PR02 Modelling A class', tag: 'CLASS', tagClass: 'tag-class' },
+    { id: 'attend-pr03', label: 'Attend PR03 Modelling B class', tag: 'CLASS', tagClass: 'tag-class' },
+    { id: 'attend-lab', label: 'Attend MATLAB Lab', tag: 'CLASS', tagClass: 'tag-class' },
+  ];
+
+  // ── State ──
+  let currentWeek = 1;
+  let allData = {};
+
+  function getWeekKey(week) { return `mat1001-week-${week}`; }
+
+  function defaultWeekData() {
+    const checks = {};
+    tasks.forEach(t => { checks[t.id] = false; });
+    return { checks, notes: '' };
+  }
+
+  // ── Build week selector ──
+  const weekSelect = document.getElementById('weekSelect');
+  for (let i = 1; i <= 12; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `Week ${i}`;
+    weekSelect.appendChild(opt);
+  }
+  weekSelect.addEventListener('change', async () => {
+    await saveCurrentWeek();
+    currentWeek = parseInt(weekSelect.value);
+    await loadWeek(currentWeek);
+  });
+
+  // ── Render tracker ──
+  function renderTracker(data) {
+    const grid = document.getElementById('trackerGrid');
+    grid.innerHTML = '';
+
+    tasks.forEach(task => {
+      const row = document.createElement('div');
+      row.className = 'tracker-row' + (data.checks[task.id] ? ' checked' : '');
+
+      const check = document.createElement('button');
+      check.className = 'tracker-check' + (data.checks[task.id] ? ' active' : '');
+      check.textContent = data.checks[task.id] ? '✓' : '';
+      check.onclick = async () => {
+        data.checks[task.id] = !data.checks[task.id];
+        check.classList.toggle('active');
+        check.textContent = data.checks[task.id] ? '✓' : '';
+        row.classList.toggle('checked');
+        await saveCurrentWeek();
+        flashSaved();
+      };
+
+      const label = document.createElement('span');
+      label.className = 'tracker-label';
+      label.textContent = task.label;
+
+      const tag = document.createElement('span');
+      tag.className = 'tracker-tag ' + task.tagClass;
+      tag.textContent = task.tag;
+
+      row.appendChild(check);
+      row.appendChild(label);
+      row.appendChild(tag);
+      grid.appendChild(row);
+    });
+
+    document.getElementById('weekNotes').value = data.notes || '';
+  }
+
+  // ── Notes auto-save ──
+  let saveTimeout;
+  document.getElementById('weekNotes').addEventListener('input', () => {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(async () => {
+      const data = allData[getWeekKey(currentWeek)] || defaultWeekData();
+      data.notes = document.getElementById('weekNotes').value;
+      allData[getWeekKey(currentWeek)] = data;
+      await saveCurrentWeek();
+      flashSaved();
+    }, 600);
+  });
+
+  function flashSaved() {
+    const el = document.getElementById('saveStatus');
+    el.textContent = '✓ Saved';
+    el.classList.add('saved');
+    setTimeout(() => {
+      el.textContent = 'Changes save automatically';
+      el.classList.remove('saved');
+    }, 2000);
+  }
+
+  // ── Load & save ──
+  async function loadWeek(week) {
+    const key = getWeekKey(week);
+    let data = allData[key];
+    if (!data) {
+      data = await storage.get(key) || defaultWeekData();
+      allData[key] = data;
+    }
+    renderTracker(data);
+  }
+
+  async function saveCurrentWeek() {
+    const key = getWeekKey(currentWeek);
+    const data = allData[key] || defaultWeekData();
+    data.notes = document.getElementById('weekNotes').value;
+    allData[key] = data;
+    await storage.set(key, data);
+  }
+
+  // ── Init ──
+  loadWeek(1);
+</script>
+</body>
+</html>
