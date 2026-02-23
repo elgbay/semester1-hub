@@ -106,6 +106,7 @@
   .pset-link-arrow { color: var(--text-dim); font-size: 12px; }
   .tracker-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
   .tracker-header h3 { font-size: 16px; font-weight: 600; }
+  .tracker-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .week-selector { display: flex; align-items: center; gap: 8px; }
   .week-selector label { font-size: 12px; color: var(--text-muted); }
   .week-selector select { background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; }
@@ -131,6 +132,7 @@
   .tag-pr02 { background: rgba(52, 211, 153, 0.12); color: var(--mat1001); }
   .tag-pr03 { background: rgba(129, 140, 248, 0.12); color: var(--psy1bam); }
   .tag-lc01 { background: rgba(251, 146, 60, 0.12); color: var(--edu2005); }
+  .tag-psy1bam { background: rgba(129, 140, 248, 0.16); color: var(--psy1bam); border: 1px solid rgba(129, 140, 248, 0.3); }
   .tag-class { background: rgba(52, 211, 153, 0.08); color: var(--green); border: 1px solid rgba(52, 211, 153, 0.2); }
   .task-notes { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: var(--surface-3); border-top: 0px solid var(--border); }
   .task-item.expanded .task-notes { max-height: 600px; padding: 12px 16px; border-top: 1px solid var(--border); }
@@ -237,7 +239,10 @@
   <hr class="section-divider">
   <div class="tracker-header">
     <h3>Weekly Progress Tracker</h3>
-    <div class="week-selector"><label>Week:</label><select id="weekSelect"></select></div>
+    <div class="tracker-controls">
+      <div class="week-selector"><label>Subject:</label><select id="subjectSelect"></select></div>
+      <div class="week-selector"><label>Week:</label><select id="weekSelect"></select></div>
+    </div>
   </div>
   <div class="tracker-grid" id="trackerGrid"></div>
   <div class="action-items" id="actionItems">
@@ -296,40 +301,69 @@
     }
   }
 
-  const tasks = [
-    { id: 'foundations-reading', label: 'Read Foundations material', tag: 'PR01', tagClass: 'tag-pr01', ph: 'How was the reading? Any concepts unclear?' },
-    { id: 'foundations-qs', label: 'Do Foundations Qs cold → sort ✅🟡🔴', tag: 'PR01', tagClass: 'tag-pr01', ph: 'Which Qs were ✅🟡🔴? What topics need work?' },
-    { id: 'modelling-a-read', label: 'Read Modelling Part A lecture notes', tag: 'PR02', tagClass: 'tag-pr02', ph: 'Key concepts? Anything confusing?' },
-    { id: 'modelling-a-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR02', tagClass: 'tag-pr02', ph: 'Quiz score? Which areas tripped you up?' },
-    { id: 'modelling-b-read', label: 'Read Modelling Part B lecture notes', tag: 'PR03', tagClass: 'tag-pr03', ph: 'Key concepts? Anything confusing?' },
-    { id: 'modelling-b-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR03', tagClass: 'tag-pr03', ph: 'Quiz score? Which areas tripped you up?' },
-    { id: 'practice-sheets', label: 'Upload practice sheets → get similar-level Qs', tag: 'LC01', tagClass: 'tag-lc01', ph: 'How did the practice Qs go? Gaps?' },
-    { id: 'attend-pr01', label: 'Attend PR01 Foundations class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Anything click?' },
-    { id: 'attend-pr02', label: 'Attend PR02 Modelling A class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Teaching techniques?' },
-    { id: 'attend-pr03', label: 'Attend PR03 Modelling B class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Pedagogy observations?' },
-    { id: 'attend-lab', label: 'Attend MATLAB Lab', tag: 'CLASS', tagClass: 'tag-class', ph: 'MATLAB concepts covered? Issues with code?' },
+  const subjects = [
+    {
+      id: 'mat1001',
+      name: 'MAT1001 Prep',
+      tasks: [
+        { id: 'foundations-reading', label: 'Read Foundations material', tag: 'PR01', tagClass: 'tag-pr01', ph: 'How was the reading? Any concepts unclear?' },
+        { id: 'foundations-qs', label: 'Do Foundations Qs cold → sort ✅🟡🔴', tag: 'PR01', tagClass: 'tag-pr01', ph: 'Which Qs were ✅🟡🔴? What topics need work?' },
+        { id: 'modelling-a-read', label: 'Read Modelling Part A lecture notes', tag: 'PR02', tagClass: 'tag-pr02', ph: 'Key concepts? Anything confusing?' },
+        { id: 'modelling-a-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR02', tagClass: 'tag-pr02', ph: 'Quiz score? Which areas tripped you up?' },
+        { id: 'modelling-b-read', label: 'Read Modelling Part B lecture notes', tag: 'PR03', tagClass: 'tag-pr03', ph: 'Key concepts? Anything confusing?' },
+        { id: 'modelling-b-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR03', tagClass: 'tag-pr03', ph: 'Quiz score? Which areas tripped you up?' },
+        { id: 'practice-sheets', label: 'Upload practice sheets → get similar-level Qs', tag: 'LC01', tagClass: 'tag-lc01', ph: 'How did the practice Qs go? Gaps?' },
+        { id: 'attend-pr01', label: 'Attend PR01 Foundations class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Anything click?' },
+        { id: 'attend-pr02', label: 'Attend PR02 Modelling A class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Teaching techniques?' },
+        { id: 'attend-pr03', label: 'Attend PR03 Modelling B class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Pedagogy observations?' },
+        { id: 'attend-lab', label: 'Attend MATLAB Lab', tag: 'CLASS', tagClass: 'tag-class', ph: 'MATLAB concepts covered? Issues with code?' },
+      ]
+    },
+    {
+      id: 'psy1bam-tutorial',
+      name: 'PSY1BAM Tutorial (Intro Psych: Brain and Mind)',
+      tasks: [
+        { id: 'psy1bam-lms-guide', label: 'Open LMS and read through the subject guide', tag: 'TUTORIAL', tagClass: 'tag-psy1bam', ph: 'Any key due dates or tutorial expectations noted?' }
+      ]
+    }
   ];
 
+  function getCurrentTasks(){
+    const currentSubject = subjects.find(s => s.id === currentSubjectId);
+    return currentSubject ? currentSubject.tasks : [];
+  }
+
   let currentWeek = 1;
-  function weekKey(w){return `mat1001-w${w}`}
+  let currentSubjectId = subjects[0].id;
+  function weekKey(w){return `${currentSubjectId}-w${w}`}
   function getWeekData(w){
     const d = load(weekKey(w));
     if(d) return d;
     const f = {checks:{},notes:{},weekNotes:''};
-    tasks.forEach(t=>{f.checks[t.id]=false;f.notes[t.id]='';});
+    getCurrentTasks().forEach(t=>{f.checks[t.id]=false;f.notes[t.id]='';});
     return f;
   }
+
+  const subjectSelect = document.getElementById('subjectSelect');
+  subjects.forEach(subject=>{
+    const option = document.createElement('option');
+    option.value = subject.id;
+    option.textContent = subject.name;
+    subjectSelect.appendChild(option);
+  });
 
   const weekSelect = document.getElementById('weekSelect');
   for(let i=1;i<=12;i++){const o=document.createElement('option');o.value=i;o.textContent=`Week ${i}`;weekSelect.appendChild(o);}
   weekSelect.addEventListener('change',()=>{currentWeek=parseInt(weekSelect.value);render();});
+  subjectSelect.addEventListener('change',()=>{currentSubjectId=subjectSelect.value;render();});
 
   function render(){
+    const activeTasks = getCurrentTasks();
     const data = getWeekData(currentWeek);
     const grid = document.getElementById('trackerGrid');
     grid.innerHTML = '';
 
-    tasks.forEach(task=>{
+    activeTasks.forEach(task=>{
       const item = document.createElement('div');
       item.className = 'task-item';
       if(data.checks[task.id]) item.classList.add('checked');
@@ -391,7 +425,7 @@
 
     const weekNotesEl = document.getElementById('weekNotes');
     weekNotesEl.innerHTML = data.weekNotes || '';
-    updateActionItems(data);
+    updateActionItems(data, activeTasks);
   }
 
   // Week notes
@@ -408,11 +442,11 @@
     },500);
   });
 
-  function updateActionItems(data){
+  function updateActionItems(data, activeTasks = getCurrentTasks()){
     const container=document.getElementById('actionItems');
     const list=document.getElementById('actionList');
     list.innerHTML='';let has=false;
-    tasks.forEach(task=>{
+    activeTasks.forEach(task=>{
       const noteHtml = data.notes[task.id];
       if(noteHtml){
         const tmp=document.createElement('div');tmp.innerHTML=noteHtml;
