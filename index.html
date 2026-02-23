@@ -428,21 +428,28 @@
   }
 
   // ── Auth ──
-  async function initApp(){
-    const { data: { session } } = await supa.auth.getSession();
-    if(session){
-      await loadAllFromSupabase();
-      showApp();
-    } else {
-      document.getElementById('authOverlay').classList.remove('hidden');
-    }
-  }
+  let appLoaded = false;
 
   function showApp(){
+    if(appLoaded) return;
+    appLoaded = true;
     document.getElementById('authOverlay').classList.add('hidden');
     document.getElementById('appContainer').classList.remove('hidden');
     initHub();
   }
+
+  // onAuthStateChange fires for: existing session restore, magic link redirect, new login
+  supa.auth.onAuthStateChange(async (event, session)=>{
+    if(session){ await loadAllFromSupabase(); showApp(); }
+  });
+
+  // Fallback: if no auth event after 1s, show login
+  setTimeout(async ()=>{
+    if(!appLoaded){
+      const { data:{ session } } = await supa.auth.getSession();
+      if(!session) document.getElementById('authOverlay').classList.remove('hidden');
+    }
+  }, 1000);
 
   document.getElementById('authBtn').addEventListener('click', async ()=>{
     const email = document.getElementById('authEmail').value.trim();
@@ -455,15 +462,6 @@
     if(error){ msg.textContent = error.message; msg.className='auth-msg err'; btn.disabled=false; }
     else { msg.textContent = '✓ Check your email for the magic link!'; msg.className='auth-msg ok'; }
   });
-
-  supa.auth.onAuthStateChange(async (event, session)=>{
-    if(event === 'SIGNED_IN' && session){
-      await loadAllFromSupabase();
-      showApp();
-    }
-  });
-
-  initApp();
 
   function initHub(){
 
