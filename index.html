@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Semester 1 — Ro's Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --bg: #2b2d31;
@@ -236,9 +237,35 @@
   .wt-agenda-subject.s-edu1005 { background: rgba(249,112,102,0.12); color: var(--edu1005); }
   .wt-empty { font-size: 12px; color: var(--text-dim); font-style: italic; padding: 16px 0; }
   @media (max-width: 640px) { .wt-grid { grid-template-columns: repeat(7, 1fr); gap: 3px; } .wt-grid-day { padding: 6px 4px; min-height: 60px; } }
+  /* ── Auth overlay ── */
+  #authOverlay { position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; }
+  #authOverlay.hidden { display:none; }
+  .auth-box { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:40px; width:100%; max-width:400px; text-align:center; }
+  .auth-box h2 { font-size:20px; font-weight:600; margin-bottom:6px; }
+  .auth-box p { color:var(--text-muted); font-size:13px; margin-bottom:24px; }
+  .auth-input { width:100%; box-sizing:border-box; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; color:var(--text); font-size:14px; outline:none; margin-bottom:12px; }
+  .auth-input:focus { border-color:var(--accent); }
+  .auth-btn { width:100%; padding:10px; background:var(--accent); border:none; border-radius:8px; color:#fff; font-size:14px; font-weight:600; cursor:pointer; }
+  .auth-btn:hover { opacity:0.9; }
+  .auth-btn:disabled { opacity:0.5; cursor:not-allowed; }
+  .auth-msg { margin-top:14px; font-size:13px; color:var(--text-muted); min-height:18px; }
+  .auth-msg.ok { color:#4ade80; }
+  .auth-msg.err { color:var(--red); }
+  #appContainer.hidden { display:none; }
 </style>
 </head>
 <body>
+<div id="authOverlay">
+  <div class="auth-box">
+    <div style="font-size:32px;margin-bottom:12px;">📚</div>
+    <h2>Ro's Semester Hub</h2>
+    <p>Enter your email to get a magic link</p>
+    <input id="authEmail" class="auth-input" type="email" placeholder="your@email.com" />
+    <button id="authBtn" class="auth-btn">Send magic link</button>
+    <div id="authMsg" class="auth-msg"></div>
+  </div>
+</div>
+<div id="appContainer" class="hidden">
 <div class="container">
   <header>
     <div class="semester-tag">Semester 1 · 2025 · Bundoora Campus</div>
@@ -345,7 +372,7 @@
   <div class="notes-section">
     <label>Week Overview & Reflections</label>
     <div class="rich-note-big" id="weekNotes" contenteditable="true" data-placeholder="Big picture: how did the week go overall? Paste screenshots, images, anything useful."></div>
-    <div class="save-status" id="saveStatus">All changes save to this browser · supports pasted images</div>
+    <div class="save-status" id="saveStatus">Synced to cloud · supports pasted images</div>
   </div>
   <div class="weekly-timetable">
     <div class="weekly-timetable-head">
@@ -371,10 +398,74 @@
     <div class="month-task-list" id="monthTasks"></div>
   </div>
   <div class="footer">Semester 1 · 2025 · Built for focus</div>
-</div>
+</div><!-- /.container -->
+</div><!-- /#appContainer -->
 <script>
-  function load(k){try{return JSON.parse(localStorage.getItem(k))||null}catch{return null}}
-  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){console.warn('Storage full',e)}}
+  // ── Supabase init ──
+  const SUPA_URL = 'https://jagcftnqkvzvuigpzuqb.supabase.co';
+  const SUPA_KEY = 'sb_publishable_kYQxWxsT8Tw3GfUSO2AUmQ_YcmEIjtj';
+  const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  // ── In-memory cache (populated from Supabase on login) ──
+  let dbCache = {};
+
+  function load(k){
+    if(k in dbCache) return dbCache[k];
+    try{ return JSON.parse(localStorage.getItem(k))||null; }catch{ return null; }
+  }
+
+  function save(k,v){
+    dbCache[k] = v;
+    try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){ console.warn('localStorage full',e); }
+    supa.from('hub_data').upsert({ key:k, value:v, updated_at: new Date().toISOString() })
+      .then(({error})=>{ if(error) console.warn('Supabase save error',error); });
+  }
+
+  async function loadAllFromSupabase(){
+    const { data, error } = await supa.from('hub_data').select('key,value');
+    if(error){ console.warn('Supabase load error',error); return; }
+    data.forEach(row=>{ dbCache[row.key] = row.value; });
+  }
+
+  // ── Auth ──
+  async function initApp(){
+    const { data: { session } } = await supa.auth.getSession();
+    if(session){
+      await loadAllFromSupabase();
+      showApp();
+    } else {
+      document.getElementById('authOverlay').classList.remove('hidden');
+    }
+  }
+
+  function showApp(){
+    document.getElementById('authOverlay').classList.add('hidden');
+    document.getElementById('appContainer').classList.remove('hidden');
+    initHub();
+  }
+
+  document.getElementById('authBtn').addEventListener('click', async ()=>{
+    const email = document.getElementById('authEmail').value.trim();
+    const msg = document.getElementById('authMsg');
+    const btn = document.getElementById('authBtn');
+    if(!email){ msg.textContent='Enter your email first'; msg.className='auth-msg err'; return; }
+    btn.disabled = true;
+    msg.textContent = 'Sending…'; msg.className = 'auth-msg';
+    const { error } = await supa.auth.signInWithOtp({ email, options:{ emailRedirectTo: 'https://elgbay.github.io/semester1-hub' } });
+    if(error){ msg.textContent = error.message; msg.className='auth-msg err'; btn.disabled=false; }
+    else { msg.textContent = '✓ Check your email for the magic link!'; msg.className='auth-msg ok'; }
+  });
+
+  supa.auth.onAuthStateChange(async (event, session)=>{
+    if(event === 'SIGNED_IN' && session){
+      await loadAllFromSupabase();
+      showApp();
+    }
+  });
+
+  initApp();
+
+  function initHub(){
 
   // Compress pasted images to save localStorage space
   function compressImage(dataUrl, maxW, quality, cb) {
@@ -510,9 +601,8 @@
 
   function exportTrackerData(){
     const payload = {version: 1, exportedAt: new Date().toISOString(), data: {}};
-    Object.keys(localStorage).forEach(k=>{
-      if(/-(w\d+)$/.test(k)) payload.data[k]=load(k);
-    });
+    const allKeys = new Set([...Object.keys(dbCache), ...Object.keys(localStorage)]);
+    allKeys.forEach(k=>{ if(/-(w\d+)$/.test(k)) payload.data[k]=load(k); });
     const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -994,7 +1084,7 @@
   function flashSaved(msg){
     const el=document.getElementById('saveStatus');
     el.textContent=msg||'✓ Saved';el.classList.add('saved');
-    setTimeout(()=>{el.textContent='All changes save to this browser · supports pasted images';el.classList.remove('saved');},2000);
+    setTimeout(()=>{el.textContent='Synced to cloud · supports pasted images';el.classList.remove('saved');},2000);
   }
 
   document.getElementById('exportBtn').addEventListener('click', exportTrackerData);
@@ -1006,6 +1096,7 @@
   });
 
   render();
+  } // end initHub
 </script>
 </body>
 </html>
