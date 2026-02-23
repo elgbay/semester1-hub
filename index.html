@@ -32,7 +32,11 @@
     --psy1bam-bg: rgba(129, 140, 248, 0.09);
     --psy1bam-border: rgba(129, 140, 248, 0.28);
     --green: #34d399;
+    --green-bg: rgba(52, 211, 153, 0.1);
+    --green-border: rgba(52, 211, 153, 0.3);
     --yellow: #fbbf24;
+    --yellow-bg: rgba(251, 191, 36, 0.1);
+    --yellow-border: rgba(251, 191, 36, 0.3);
     --red: #f87171;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -190,6 +194,48 @@
   .month-task-item:last-child { border-bottom: none; }
   .month-task-item strong { color: var(--text); }
   .month-task-empty { font-size: 12px; color: var(--text-dim); font-style: italic; }
+  /* Weekly Timetable */
+  .weekly-timetable { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-top: 24px; }
+  .weekly-timetable-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+  .weekly-timetable-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
+  .wt-tabs { display: flex; gap: 4px; }
+  .wt-tab { padding: 5px 12px; border-radius: 5px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 10px; cursor: pointer; transition: all 0.15s; }
+  .wt-tab:hover { border-color: var(--accent-border); }
+  .wt-tab.active { background: var(--accent-bg); border-color: var(--accent-border); color: var(--text); }
+  .wt-clear-btn { padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 9px; cursor: pointer; transition: all 0.15s; display: none; }
+  .wt-clear-btn:hover { border-color: var(--red); color: var(--red); }
+  .wt-clear-btn.visible { display: inline-block; }
+  /* Grid view */
+  .wt-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 16px; }
+  .wt-grid-day { background: var(--surface-3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 8px; min-height: 80px; cursor: pointer; transition: all 0.15s; }
+  .wt-grid-day:hover { border-color: var(--border-light); }
+  .wt-grid-day.selected { border-color: var(--accent-border); background: var(--accent-bg); }
+  .wt-grid-day.today { border-color: var(--green-border); }
+  .wt-grid-day-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+  .wt-grid-day-num { font-size: 18px; font-weight: 700; margin: 2px 0 6px; }
+  .wt-grid-day.today .wt-grid-day-num { color: var(--green); }
+  .wt-grid-day-count { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); }
+  .wt-grid-day-count.has-tasks { color: var(--green); }
+  .wt-grid-task-pip { display: inline-block; width: 6px; height: 6px; border-radius: 2px; margin: 1px; }
+  /* Agenda view */
+  .wt-agenda { margin-bottom: 8px; }
+  .wt-agenda-day-heading { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--text); padding: 10px 0 6px; border-bottom: 1px solid var(--border); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .wt-agenda-day-heading .day-badge { font-size: 9px; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+  .wt-agenda-day-heading .day-badge.today-badge { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .wt-agenda-day-heading .day-badge.tomorrow-badge { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+  .wt-agenda-task { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; margin-bottom: 4px; transition: background 0.1s; font-size: 12px; }
+  .wt-agenda-task:hover { background: var(--surface-2); }
+  .wt-agenda-check { width: 14px; height: 14px; border-radius: 3px; border: 2px solid var(--border-light); flex-shrink: 0; }
+  .wt-agenda-check.done { background: var(--green); border-color: var(--green); }
+  .wt-agenda-task-label { flex: 1; color: var(--text-muted); }
+  .wt-agenda-task.completed .wt-agenda-task-label { text-decoration: line-through; color: var(--text-dim); }
+  .wt-agenda-subject { font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; }
+  .wt-agenda-subject.s-mat1001 { background: rgba(52,211,153,0.12); color: var(--mat1001); }
+  .wt-agenda-subject.s-psy1bam { background: rgba(129,140,248,0.12); color: var(--psy1bam); }
+  .wt-agenda-subject.s-edu2005 { background: rgba(251,146,60,0.12); color: var(--edu2005); }
+  .wt-agenda-subject.s-edu1005 { background: rgba(249,112,102,0.12); color: var(--edu1005); }
+  .wt-empty { font-size: 12px; color: var(--text-dim); font-style: italic; padding: 16px 0; }
+  @media (max-width: 640px) { .wt-grid { grid-template-columns: repeat(7, 1fr); gap: 3px; } .wt-grid-day { padding: 6px 4px; min-height: 60px; } }
 </style>
 </head>
 <body>
@@ -300,6 +346,21 @@
     <label>Week Overview & Reflections</label>
     <div class="rich-note-big" id="weekNotes" contenteditable="true" data-placeholder="Big picture: how did the week go overall? Paste screenshots, images, anything useful."></div>
     <div class="save-status" id="saveStatus">All changes save to this browser · supports pasted images</div>
+  </div>
+  <div class="weekly-timetable">
+    <div class="weekly-timetable-head">
+      <div class="weekly-timetable-title">Weekly Timetable (auto from task due dates)</div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <div class="wt-tabs">
+          <button class="wt-tab active" id="wtTabGrid" type="button">Grid</button>
+          <button class="wt-tab" id="wtTabAgenda" type="button">Agenda</button>
+        </div>
+        <button class="wt-clear-btn" id="wtClearFilter" type="button">✕ Clear filter</button>
+      </div>
+    </div>
+    <div id="wtGridView" class="wt-grid"></div>
+    <div id="wtAgendaView" class="wt-agenda" style="display:none"></div>
+    <div id="wtFilteredTasks"></div>
   </div>
   <div class="bottom-calendar">
     <div class="bottom-calendar-head">
@@ -564,6 +625,242 @@
   calendarMonthInput.value = selectedCalendarDay.slice(0,7);
   calendarMonthInput.addEventListener('change', ()=>render());
 
+  // Weekly timetable state
+  let wtView = 'grid'; // 'grid' or 'agenda'
+  let wtFilterDay = null; // null = no filter, string = ISO date
+  const todayStr = now.toISOString().slice(0,10);
+
+  document.getElementById('wtTabGrid').addEventListener('click', ()=>{ wtView='grid'; renderWt(); });
+  document.getElementById('wtTabAgenda').addEventListener('click', ()=>{ wtView='agenda'; renderWt(); });
+  document.getElementById('wtClearFilter').addEventListener('click', ()=>{ wtFilterDay=null; renderWt(); });
+
+  function renderWt(){ // lightweight re-render just for weekly timetable
+    const activeTasks = getCurrentTasks();
+    const data = getWeekData(currentWeek);
+    updateWeeklyTimetable(getAllDueTasks(), data);
+  }
+
+  // Scan all subjects × weeks 1-12 to collect every task with a due date
+  function getAllDueTasks(){
+    const all = [];
+    const origSubject = currentSubjectId;
+    subjects.forEach(subj=>{
+      currentSubjectId = subj.id;
+      for(let w=1; w<=12; w++){
+        const wData = load(`${subj.id}-w${w}`);
+        if(!wData) continue;
+        subj.tasks.forEach(task=>{
+          const due = (wData.dueDates && wData.dueDates[task.id]) || task.due || null;
+          if(!due) return;
+          const d = new Date(due+'T00:00:00');
+          if(Number.isNaN(d.getTime())) return;
+          const completed = !!(wData.checks && wData.checks[task.id]);
+          all.push({ task, due, completed, subjectId: subj.id, subjectName: subj.name, week: w });
+        });
+      }
+    });
+    currentSubjectId = origSubject;
+    return all;
+  }
+
+  function getSubjectClass(sid){
+    if(sid.startsWith('mat')) return 's-mat1001';
+    if(sid.startsWith('psy')) return 's-psy1bam';
+    if(sid.includes('edu2005')) return 's-edu2005';
+    if(sid.includes('edu1005')) return 's-edu1005';
+    return '';
+  }
+
+  function getSubjectShort(sid){
+    if(sid.startsWith('mat')) return 'MAT1001';
+    if(sid.startsWith('psy')) return 'PSY1BAM';
+    if(sid.includes('edu2005')) return 'EDU2005';
+    if(sid.includes('edu1005')) return 'EDU1005';
+    return sid.toUpperCase();
+  }
+
+  function updateWeeklyTimetable(allDue){
+    const gridEl = document.getElementById('wtGridView');
+    const agendaEl = document.getElementById('wtAgendaView');
+    const filteredEl = document.getElementById('wtFilteredTasks');
+    const clearBtn = document.getElementById('wtClearFilter');
+
+    // Tab toggle
+    document.getElementById('wtTabGrid').classList.toggle('active', wtView==='grid');
+    document.getElementById('wtTabAgenda').classList.toggle('active', wtView==='agenda');
+    gridEl.style.display = wtView==='grid' ? 'grid' : 'none';
+    agendaEl.style.display = wtView==='agenda' ? 'block' : 'none';
+    clearBtn.classList.toggle('visible', !!wtFilterDay);
+
+    // Build 7-day window starting Monday of this week
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const dayOfWeek = today.getDay() || 7; // Mon=1
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - (dayOfWeek - 1));
+
+    const days = [];
+    for(let i=0; i<7; i++){
+      const d = new Date(monday);
+      d.setDate(monday.getDate()+i);
+      const iso = d.toISOString().slice(0,10);
+      const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const dayNamesFull = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const isToday = iso === todayStr;
+      const diffFromToday = Math.round((d - today) / (24*60*60*1000));
+      let friendlyLabel;
+      if(diffFromToday === 0) friendlyLabel = 'Today';
+      else if(diffFromToday === 1) friendlyLabel = 'Tomorrow';
+      else friendlyLabel = `${dayNames[d.getDay()]} ${d.getDate()} ${d.toLocaleDateString('en-GB',{month:'short'})}`;
+      days.push({ date: d, iso, dayName: dayNames[d.getDay()], dayNum: d.getDate(), isToday, friendlyLabel, diffFromToday });
+    }
+
+    // Index tasks by day
+    const tasksByDay = {};
+    days.forEach(d=>{ tasksByDay[d.iso] = []; });
+    allDue.forEach(dt=>{
+      if(tasksByDay[dt.due]) tasksByDay[dt.due].push(dt);
+    });
+    // Sort: incomplete first, then alphabetical
+    Object.values(tasksByDay).forEach(arr=>{
+      arr.sort((a,b)=>{
+        if(a.completed !== b.completed) return a.completed ? 1 : -1;
+        return a.task.label.localeCompare(b.task.label);
+      });
+    });
+
+    // ── Grid view ──
+    gridEl.innerHTML = '';
+    days.forEach(day=>{
+      const cell = document.createElement('div');
+      cell.className = 'wt-grid-day';
+      if(day.isToday) cell.classList.add('today');
+      if(wtFilterDay === day.iso) cell.classList.add('selected');
+
+      const lbl = document.createElement('div');
+      lbl.className = 'wt-grid-day-label';
+      lbl.textContent = day.dayName;
+
+      const num = document.createElement('div');
+      num.className = 'wt-grid-day-num';
+      num.textContent = day.dayNum;
+
+      const tasks = tasksByDay[day.iso];
+      const countEl = document.createElement('div');
+      countEl.className = 'wt-grid-day-count' + (tasks.length ? ' has-tasks' : '');
+      if(tasks.length === 0) countEl.textContent = '—';
+      else {
+        // Show coloured pips for each task
+        tasks.forEach(dt=>{
+          const pip = document.createElement('span');
+          pip.className = 'wt-grid-task-pip';
+          const sid = dt.subjectId;
+          if(sid.startsWith('mat')) pip.style.background = 'var(--mat1001)';
+          else if(sid.startsWith('psy')) pip.style.background = 'var(--psy1bam)';
+          else if(sid.includes('edu2005')) pip.style.background = 'var(--edu2005)';
+          else if(sid.includes('edu1005')) pip.style.background = 'var(--edu1005)';
+          else pip.style.background = 'var(--text-dim)';
+          if(dt.completed) pip.style.opacity = '0.3';
+          countEl.appendChild(pip);
+        });
+      }
+
+      cell.appendChild(lbl);
+      cell.appendChild(num);
+      cell.appendChild(countEl);
+      cell.onclick = ()=>{ wtFilterDay = (wtFilterDay === day.iso) ? null : day.iso; renderWt(); };
+      gridEl.appendChild(cell);
+    });
+
+    // ── Agenda view ──
+    agendaEl.innerHTML = '';
+    let hasAnyTasks = false;
+    days.forEach(day=>{
+      const tasks = tasksByDay[day.iso];
+      if(tasks.length === 0) return;
+      hasAnyTasks = true;
+
+      const heading = document.createElement('div');
+      heading.className = 'wt-agenda-day-heading';
+      heading.textContent = day.friendlyLabel + ' ';
+      if(day.diffFromToday === 0){
+        const badge = document.createElement('span');
+        badge.className = 'day-badge today-badge'; badge.textContent = 'TODAY';
+        heading.appendChild(badge);
+      } else if(day.diffFromToday === 1){
+        const badge = document.createElement('span');
+        badge.className = 'day-badge tomorrow-badge'; badge.textContent = 'TOMORROW';
+        heading.appendChild(badge);
+      }
+      agendaEl.appendChild(heading);
+
+      tasks.forEach(dt=>{
+        const row = document.createElement('div');
+        row.className = 'wt-agenda-task' + (dt.completed ? ' completed' : '');
+
+        const chk = document.createElement('div');
+        chk.className = 'wt-agenda-check' + (dt.completed ? ' done' : '');
+
+        const lbl = document.createElement('span');
+        lbl.className = 'wt-agenda-task-label';
+        lbl.textContent = dt.task.label;
+
+        const subj = document.createElement('span');
+        subj.className = 'wt-agenda-subject ' + getSubjectClass(dt.subjectId);
+        subj.textContent = getSubjectShort(dt.subjectId);
+
+        const tagEl = document.createElement('span');
+        tagEl.className = 'tracker-tag ' + (dt.task.tagClass || '');
+        tagEl.textContent = dt.task.tag || '';
+
+        row.appendChild(chk);
+        row.appendChild(lbl);
+        row.appendChild(subj);
+        row.appendChild(tagEl);
+        agendaEl.appendChild(row);
+      });
+    });
+    if(!hasAnyTasks){
+      agendaEl.innerHTML = '<div class="wt-empty">No upcoming due dates in the next 7 days.</div>';
+    }
+
+    // ── Filtered tasks (when clicking a grid day) ──
+    filteredEl.innerHTML = '';
+    if(wtFilterDay){
+      const filterTasks = allDue.filter(dt=>dt.due === wtFilterDay);
+      filterTasks.sort((a,b)=>{ if(a.completed!==b.completed) return a.completed?1:-1; return a.task.label.localeCompare(b.task.label); });
+
+      const fDate = new Date(wtFilterDay+'T00:00:00');
+      const fLabel = fDate.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'});
+
+      const fHead = document.createElement('div');
+      fHead.style.cssText = 'font-size:12px;color:var(--text-muted);margin:12px 0 8px;font-family:JetBrains Mono,monospace;font-weight:500;';
+      fHead.textContent = `Tasks due ${fLabel}:`;
+      filteredEl.appendChild(fHead);
+
+      if(filterTasks.length === 0){
+        filteredEl.innerHTML += '<div class="wt-empty">No tasks due on this day.</div>';
+      } else {
+        filterTasks.forEach(dt=>{
+          const row = document.createElement('div');
+          row.className = 'wt-agenda-task' + (dt.completed ? ' completed' : '');
+          const chk = document.createElement('div');
+          chk.className = 'wt-agenda-check' + (dt.completed ? ' done' : '');
+          const lbl = document.createElement('span');
+          lbl.className = 'wt-agenda-task-label'; lbl.textContent = dt.task.label;
+          const subj = document.createElement('span');
+          subj.className = 'wt-agenda-subject ' + getSubjectClass(dt.subjectId);
+          subj.textContent = getSubjectShort(dt.subjectId);
+          const tagEl = document.createElement('span');
+          tagEl.className = 'tracker-tag ' + (dt.task.tagClass || '');
+          tagEl.textContent = dt.task.tag || '';
+          row.appendChild(chk); row.appendChild(lbl); row.appendChild(subj); row.appendChild(tagEl);
+          filteredEl.appendChild(row);
+        });
+      }
+    }
+  }
+
   function render(){
     const activeTasks = getCurrentTasks();
     const data = getWeekData(currentWeek);
@@ -661,6 +958,7 @@
     weekNotesEl.innerHTML = data.weekNotes || '';
     updateActionItems(data, activeTasks);
     updateProgress(activeTasks, data);
+    updateWeeklyTimetable(getAllDueTasks());
     updateMonthCalendar(activeTasks, data);
   }
 
