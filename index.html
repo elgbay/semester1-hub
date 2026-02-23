@@ -155,6 +155,18 @@
   .action-item { font-size: 12px; color: var(--text-muted); padding: 4px 0; line-height: 1.5; }
   .action-item strong { color: var(--text); font-weight: 600; }
   .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+  .tracker-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+  .progress-wrap { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px; }
+  .progress-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); flex-shrink: 0; }
+  .progress-bar { flex: 1; height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.4s ease; width: 0; }
+  .progress-text { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+  .backup-controls { display: flex; gap: 6px; }
+  .backup-btn { padding: 5px 12px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 10px; cursor: pointer; transition: all 0.15s; }
+  .backup-btn:hover { border-color: var(--accent-border); color: var(--text); }
+  .due-chip { font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; background: rgba(99, 102, 241, 0.08); color: var(--text-dim); border: 1px solid var(--border); }
+  .due-chip.soon { background: rgba(251, 191, 36, 0.12); color: var(--yellow); border-color: rgba(251, 191, 36, 0.3); }
+  .due-chip.overdue { background: rgba(248, 113, 113, 0.12); color: var(--red); border-color: rgba(248, 113, 113, 0.3); }
 </style>
 </head>
 <body>
@@ -242,6 +254,18 @@
     <div class="tracker-controls">
       <div class="week-selector"><label>Subject:</label><select id="subjectSelect"></select></div>
       <div class="week-selector"><label>Week:</label><select id="weekSelect"></select></div>
+    </div>
+  </div>
+  <div class="tracker-meta">
+    <div class="progress-wrap">
+      <span class="progress-label">Progress</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-text" id="progressText">0/0 complete</span>
+    </div>
+    <div class="backup-controls">
+      <button class="backup-btn" id="exportBtn" type="button">Export JSON</button>
+      <button class="backup-btn" id="importBtn" type="button">Import JSON</button>
+      <input id="importFile" type="file" accept="application/json" style="display:none">
     </div>
   </div>
   <div class="tracker-grid" id="trackerGrid"></div>
@@ -371,6 +395,56 @@
   weekSelect.addEventListener('change',()=>{currentWeek=parseInt(weekSelect.value);render();});
   subjectSelect.addEventListener('change',()=>{currentSubjectId=subjectSelect.value;render();});
 
+  function getDueState(dueStr){
+    if(!dueStr) return null;
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const dueDate = new Date(dueStr+'T00:00:00');
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const diffDays = Math.round((dueDate - today) / msPerDay);
+    if(diffDays < 0) return {text:`Overdue ${Math.abs(diffDays)}d`, cls:'overdue'};
+    if(diffDays === 0) return {text:'Due today', cls:'soon'};
+    if(diffDays <= 3) return {text:`Due in ${diffDays}d`, cls:'soon'};
+    return {text:`Due in ${diffDays}d`, cls:''};
+  }
+
+  function updateProgress(activeTasks, data){
+    const total = activeTasks.length;
+    const done = activeTasks.filter(task=>data.checks[task.id]).length;
+    const pct = total ? Math.round((done/total)*100) : 0;
+    document.getElementById('progressFill').style.width = `${pct}%`;
+    document.getElementById('progressText').textContent = `${done}/${total} complete, ${pct}%`;
+  }
+
+  function exportTrackerData(){
+    const payload = {version: 1, exportedAt: new Date().toISOString(), data: {}};
+    Object.keys(localStorage).forEach(k=>{
+      if(/-(w\d+)$/.test(k)) payload.data[k]=load(k);
+    });
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `semester-hub-backup-${new Date().toISOString().slice(0,10)}.json`;
+    a.click(); URL.revokeObjectURL(url);
+    flashSaved('✓ Backup exported');
+  }
+
+  function importTrackerData(file){
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      try {
+        const parsed = JSON.parse(e.target.result);
+        const data = parsed.data || {};
+        Object.entries(data).forEach(([k,v])=>save(k,v));
+        render();
+        flashSaved('✓ Backup imported');
+      } catch {
+        flashSaved('⚠ Import failed: invalid JSON');
+      }
+    };
+    reader.readAsText(file);
+  }
+
   function render(){
     const activeTasks = getCurrentTasks();
     const data = getWeekData(currentWeek);
@@ -403,7 +477,10 @@
       const tag = document.createElement('span');
       tag.className='tracker-tag '+task.tagClass;tag.textContent=task.tag;
 
-      main.appendChild(check);main.appendChild(label);main.appendChild(noteInd);main.appendChild(tag);main.appendChild(arrow);
+      main.appendChild(check);main.appendChild(label);main.appendChild(noteInd);main.appendChild(tag);
+      const dueState = getDueState(task.due);
+      if(dueState){const dueChip=document.createElement('span');dueChip.className='due-chip'+(dueState.cls?` ${dueState.cls}`:'');dueChip.textContent=dueState.text;main.appendChild(dueChip);}
+      main.appendChild(arrow);
 
       const notesPanel = document.createElement('div');
       notesPanel.className = 'task-notes';
@@ -440,6 +517,7 @@
     const weekNotesEl = document.getElementById('weekNotes');
     weekNotesEl.innerHTML = data.weekNotes || '';
     updateActionItems(data, activeTasks);
+    updateProgress(activeTasks, data);
   }
 
   // Week notes
@@ -471,11 +549,19 @@
     container.classList.toggle('visible',has);
   }
 
-  function flashSaved(){
+  function flashSaved(msg){
     const el=document.getElementById('saveStatus');
-    el.textContent='✓ Saved';el.classList.add('saved');
+    el.textContent=msg||'✓ Saved';el.classList.add('saved');
     setTimeout(()=>{el.textContent='All changes save to this browser · supports pasted images';el.classList.remove('saved');},2000);
   }
+
+  document.getElementById('exportBtn').addEventListener('click', exportTrackerData);
+  const importFile = document.getElementById('importFile');
+  document.getElementById('importBtn').addEventListener('click', ()=>importFile.click());
+  importFile.addEventListener('change', ()=>{
+    if(importFile.files && importFile.files[0]) importTrackerData(importFile.files[0]);
+    importFile.value='';
+  });
 
   render();
 </script>
