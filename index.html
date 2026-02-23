@@ -259,9 +259,13 @@
   <div class="auth-box">
     <div style="font-size:32px;margin-bottom:12px;">📚</div>
     <h2>Ro's Semester Hub</h2>
-    <p>Enter your email to get a magic link</p>
+    <p id="authSubtitle">Sign in to your account</p>
     <input id="authEmail" class="auth-input" type="email" placeholder="your@email.com" />
-    <button id="authBtn" class="auth-btn">Send magic link</button>
+    <input id="authPassword" class="auth-input" type="password" placeholder="password" />
+    <button id="authBtn" class="auth-btn">Sign in</button>
+    <div style="margin-top:10px;">
+      <button id="authToggle" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;text-decoration:underline;">No account? Create one</button>
+    </div>
     <div id="authMsg" class="auth-msg"></div>
   </div>
 </div>
@@ -453,15 +457,32 @@
 
   document.getElementById('authBtn').addEventListener('click', async ()=>{
     const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
     const msg = document.getElementById('authMsg');
     const btn = document.getElementById('authBtn');
-    if(!email){ msg.textContent='Enter your email first'; msg.className='auth-msg err'; return; }
+    if(!email || !password){ msg.textContent='Enter email and password'; msg.className='auth-msg err'; return; }
     btn.disabled = true;
-    msg.textContent = 'Sending…'; msg.className = 'auth-msg';
-    const { error } = await supa.auth.signInWithOtp({ email, options:{ emailRedirectTo: 'https://elgbay.github.io/semester1-hub' } });
-    if(error){ msg.textContent = error.message; msg.className='auth-msg err'; btn.disabled=false; }
-    else { msg.textContent = '✓ Check your email for the magic link!'; msg.className='auth-msg ok'; }
+    msg.textContent = isSignUp ? 'Creating account…' : 'Signing in…'; msg.className = 'auth-msg';
+    if(isSignUp){
+      const { error } = await supa.auth.signUp({ email, password });
+      if(error){ msg.textContent = error.message; msg.className='auth-msg err'; btn.disabled=false; }
+      else { msg.textContent = '✓ Account created — signing you in…'; msg.className='auth-msg ok'; }
+    } else {
+      const { error } = await supa.auth.signInWithPassword({ email, password });
+      if(error){ msg.textContent = error.message; msg.className='auth-msg err'; btn.disabled=false; }
+    }
   });
+
+  let isSignUp = false;
+  document.getElementById('authPassword').addEventListener('keydown', (e)=>{ if(e.key==='Enter') document.getElementById('authBtn').click(); });
+  document.getElementById('authToggle').addEventListener('click', ()=>{
+    isSignUp = !isSignUp;
+    document.getElementById('authBtn').textContent = isSignUp ? 'Create account' : 'Sign in';
+    document.getElementById('authToggle').textContent = isSignUp ? 'Already have an account? Sign in' : 'No account? Create one';
+    document.getElementById('authSubtitle').textContent = isSignUp ? 'Create your account' : 'Sign in to your account';
+    document.getElementById('authMsg').textContent = '';
+  });
+
 
   function initHub(){
 
