@@ -106,10 +106,43 @@
   .pset-link-arrow { color: var(--text-dim); font-size: 12px; }
   .tracker-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
   .tracker-header h3 { font-size: 16px; font-weight: 600; }
+  .tracker-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .week-selector { display: flex; align-items: center; gap: 8px; }
   .week-selector label { font-size: 12px; color: var(--text-muted); }
   .week-selector select { background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; }
   .week-selector select:focus { outline: none; border-color: var(--accent); }
+  .tracker-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .progress-wrap { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; min-width: 260px; }
+  .progress-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; }
+  .progress-bar { flex: 1; height: 8px; background: var(--surface-3); border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--green)); transition: width 0.25s ease; }
+  .progress-text { font-size: 11px; color: var(--text-muted); min-width: 112px; text-align: right; }
+  .backup-controls { display: flex; align-items: center; gap: 8px; }
+  .backup-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 7px 10px; font-size: 12px; cursor: pointer; }
+  .backup-btn:hover { border-color: var(--accent-border); background: var(--surface-2); }
+  .date-planner { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+  .date-planner-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .date-planner-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+  .date-planner input { background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 6px 8px; font-family: 'DM Sans', sans-serif; }
+  .date-task-list { display: grid; gap: 6px; }
+  .date-task-item { font-size: 12px; color: var(--text-muted); padding: 8px 10px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface-3); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .date-task-item strong { color: var(--text); }
+  .date-empty { font-size: 12px; color: var(--text-dim); }
+  .task-due-edit { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .task-due-edit label { font-size: 10px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.8px; }
+  .task-due-edit input { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 6px 8px; font-size: 12px; }
+  .bottom-calendar { margin-top: 24px; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  .bottom-calendar-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .bottom-calendar-title { font-size: 13px; font-weight: 600; }
+  .bottom-calendar-head input { background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 6px 8px; font-family: 'DM Sans', sans-serif; }
+  .month-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-bottom: 12px; }
+  .month-day-name { font-size: 10px; color: var(--text-dim); text-align: center; font-family: 'JetBrains Mono', monospace; }
+  .month-day { min-height: 62px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-3); color: var(--text); padding: 6px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+  .month-day.empty { background: transparent; border-style: dashed; cursor: default; }
+  .month-day.selected { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent-border); }
+  .month-day-num { font-size: 11px; color: var(--text-muted); }
+  .month-day-count { font-size: 10px; color: var(--yellow); font-family: 'JetBrains Mono', monospace; }
+  .month-task-list { display: grid; gap: 6px; }
   .tracker-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 20px; }
   .task-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s; }
   .task-item.checked { border-color: rgba(52, 211, 153, 0.3); }
@@ -127,10 +160,15 @@
   .expand-arrow { font-size: 10px; color: var(--text-dim); transition: transform 0.2s; flex-shrink: 0; width: 16px; text-align: center; }
   .task-item.expanded .expand-arrow { transform: rotate(90deg); }
   .tracker-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 500; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 4px; flex-shrink: 0; }
+  .due-chip { font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted); background: var(--surface-3); }
+  .due-chip.soon { color: var(--yellow); border-color: rgba(251, 191, 36, 0.35); background: rgba(251, 191, 36, 0.08); }
+  .due-chip.overdue { color: var(--red); border-color: rgba(248, 113, 113, 0.35); background: rgba(248, 113, 113, 0.09); }
+  .due-date { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); }
   .tag-pr01 { background: rgba(249, 112, 102, 0.12); color: var(--edu1005); }
   .tag-pr02 { background: rgba(52, 211, 153, 0.12); color: var(--mat1001); }
   .tag-pr03 { background: rgba(129, 140, 248, 0.12); color: var(--psy1bam); }
   .tag-lc01 { background: rgba(251, 146, 60, 0.12); color: var(--edu2005); }
+  .tag-psy1bam { background: rgba(129, 140, 248, 0.16); color: var(--psy1bam); border: 1px solid rgba(129, 140, 248, 0.3); }
   .tag-class { background: rgba(52, 211, 153, 0.08); color: var(--green); border: 1px solid rgba(52, 211, 153, 0.2); }
   .task-notes { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: var(--surface-3); border-top: 0px solid var(--border); }
   .task-item.expanded .task-notes { max-height: 600px; padding: 12px 16px; border-top: 1px solid var(--border); }
@@ -237,7 +275,29 @@
   <hr class="section-divider">
   <div class="tracker-header">
     <h3>Weekly Progress Tracker</h3>
-    <div class="week-selector"><label>Week:</label><select id="weekSelect"></select></div>
+    <div class="tracker-controls">
+      <div class="week-selector"><label>Subject:</label><select id="subjectSelect"></select></div>
+      <div class="week-selector"><label>Week:</label><select id="weekSelect"></select></div>
+    </div>
+  </div>
+  <div class="tracker-meta">
+    <div class="progress-wrap">
+      <span class="progress-label">Progress</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-text" id="progressText">0/0 complete</span>
+    </div>
+    <div class="backup-controls">
+      <button class="backup-btn" id="exportBtn" type="button">Export JSON</button>
+      <button class="backup-btn" id="importBtn" type="button">Import JSON</button>
+      <input id="importFile" type="file" accept="application/json" style="display:none">
+    </div>
+  </div>
+  <div class="date-planner">
+    <div class="date-planner-head">
+      <span class="date-planner-label">Calendar focus (what is due on this date?)</span>
+      <input id="calendarDate" type="date">
+    </div>
+    <div class="date-task-list" id="calendarTasks"></div>
   </div>
   <div class="tracker-grid" id="trackerGrid"></div>
   <div class="action-items" id="actionItems">
@@ -248,6 +308,14 @@
     <label>Week Overview & Reflections</label>
     <div class="rich-note-big" id="weekNotes" contenteditable="true" data-placeholder="Big picture: how did the week go overall? Paste screenshots, images, anything useful."></div>
     <div class="save-status" id="saveStatus">All changes save to this browser · supports pasted images</div>
+  </div>
+  <div class="bottom-calendar">
+    <div class="bottom-calendar-head">
+      <div class="bottom-calendar-title">Monthly Calendar (auto from task due dates)</div>
+      <input id="calendarMonth" type="month">
+    </div>
+    <div class="month-grid" id="monthGrid"></div>
+    <div class="month-task-list" id="monthTasks"></div>
   </div>
   <div class="footer">Semester 1 · 2025 · Built for focus</div>
 </div>
@@ -296,40 +364,236 @@
     }
   }
 
-  const tasks = [
-    { id: 'foundations-reading', label: 'Read Foundations material', tag: 'PR01', tagClass: 'tag-pr01', ph: 'How was the reading? Any concepts unclear?' },
-    { id: 'foundations-qs', label: 'Do Foundations Qs cold → sort ✅🟡🔴', tag: 'PR01', tagClass: 'tag-pr01', ph: 'Which Qs were ✅🟡🔴? What topics need work?' },
-    { id: 'modelling-a-read', label: 'Read Modelling Part A lecture notes', tag: 'PR02', tagClass: 'tag-pr02', ph: 'Key concepts? Anything confusing?' },
-    { id: 'modelling-a-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR02', tagClass: 'tag-pr02', ph: 'Quiz score? Which areas tripped you up?' },
-    { id: 'modelling-b-read', label: 'Read Modelling Part B lecture notes', tag: 'PR03', tagClass: 'tag-pr03', ph: 'Key concepts? Anything confusing?' },
-    { id: 'modelling-b-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR03', tagClass: 'tag-pr03', ph: 'Quiz score? Which areas tripped you up?' },
-    { id: 'practice-sheets', label: 'Upload practice sheets → get similar-level Qs', tag: 'LC01', tagClass: 'tag-lc01', ph: 'How did the practice Qs go? Gaps?' },
-    { id: 'attend-pr01', label: 'Attend PR01 Foundations class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Anything click?' },
-    { id: 'attend-pr02', label: 'Attend PR02 Modelling A class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Teaching techniques?' },
-    { id: 'attend-pr03', label: 'Attend PR03 Modelling B class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Pedagogy observations?' },
-    { id: 'attend-lab', label: 'Attend MATLAB Lab', tag: 'CLASS', tagClass: 'tag-class', ph: 'MATLAB concepts covered? Issues with code?' },
+  const subjects = [
+    {
+      id: 'mat1001',
+      name: 'MAT1001 Prep',
+      tasks: [
+        { id: 'foundations-reading', label: 'Read Foundations material', tag: 'PR01', tagClass: 'tag-pr01', ph: 'How was the reading? Any concepts unclear?' },
+        { id: 'foundations-qs', label: 'Do Foundations Qs cold → sort ✅🟡🔴', tag: 'PR01', tagClass: 'tag-pr01', ph: 'Which Qs were ✅🟡🔴? What topics need work?', due: '2026-03-20' },
+        { id: 'modelling-a-read', label: 'Read Modelling Part A lecture notes', tag: 'PR02', tagClass: 'tag-pr02', ph: 'Key concepts? Anything confusing?' },
+        { id: 'modelling-a-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR02', tagClass: 'tag-pr02', ph: 'Quiz score? Which areas tripped you up?', due: '2026-03-22' },
+        { id: 'modelling-b-read', label: 'Read Modelling Part B lecture notes', tag: 'PR03', tagClass: 'tag-pr03', ph: 'Key concepts? Anything confusing?' },
+        { id: 'modelling-b-quiz', label: 'Upload notes → generate quiz → complete', tag: 'PR03', tagClass: 'tag-pr03', ph: 'Quiz score? Which areas tripped you up?' },
+        { id: 'practice-sheets', label: 'Upload practice sheets → get similar-level Qs', tag: 'LC01', tagClass: 'tag-lc01', ph: 'How did the practice Qs go? Gaps?' },
+        { id: 'attend-pr01', label: 'Attend PR01 Foundations class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Anything click?' },
+        { id: 'attend-pr02', label: 'Attend PR02 Modelling A class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Teaching techniques?' },
+        { id: 'attend-pr03', label: 'Attend PR03 Modelling B class', tag: 'CLASS', tagClass: 'tag-class', ph: 'What did the tutor cover? Pedagogy observations?' },
+        { id: 'attend-lab', label: 'Attend MATLAB Lab', tag: 'CLASS', tagClass: 'tag-class', ph: 'MATLAB concepts covered? Issues with code?' },
+      ]
+    },
+    {
+      id: 'psy1bam-tutorial',
+      name: 'PSY1BAM Tutorial (Intro Psych: Brain and Mind)',
+      tasks: [
+        { id: 'psy1bam-lms-guide', label: 'Open LMS and read through the subject guide', tag: 'TUTORIAL', tagClass: 'tag-psy1bam', ph: 'Any key due dates or tutorial expectations noted?', due: '2026-03-21' }
+      ]
+    },
+    {
+      id: 'edu2005-tutorial',
+      name: 'EDU2005 Tutorial (Understanding Aboriginal and Torres Strait Islander Education)',
+      tasks: [
+        { id: 'edu2005-lms-guide', label: 'Open LMS subject and read through the subject guide', tag: 'TUTORIAL', tagClass: 'tag-lc01', ph: 'What key ideas, due dates, or tutorial expectations stood out?' }
+      ]
+    },
+    {
+      id: 'edu1005-tutorial',
+      name: 'EDU1005 Tutorial (Understanding and Planning for Learning)',
+      tasks: [
+        { id: 'edu1005-lms-guide', label: 'Open LMS subject and read through the subject guide', tag: 'TUTORIAL', tagClass: 'tag-pr01', ph: 'What key ideas, due dates, or tutorial expectations stood out?' }
+      ]
+    }
   ];
 
+  function getCurrentTasks(){
+    const currentSubject = subjects.find(s => s.id === currentSubjectId);
+    return currentSubject ? currentSubject.tasks : [];
+  }
+
   let currentWeek = 1;
-  function weekKey(w){return `mat1001-w${w}`}
+  let currentSubjectId = subjects[0].id;
+  function weekKey(w){return `${currentSubjectId}-w${w}`}
   function getWeekData(w){
     const d = load(weekKey(w));
     if(d) return d;
-    const f = {checks:{},notes:{},weekNotes:''};
-    tasks.forEach(t=>{f.checks[t.id]=false;f.notes[t.id]='';});
+    const f = {checks:{},notes:{},dueDates:{},weekNotes:''};
+    getCurrentTasks().forEach(t=>{f.checks[t.id]=false;f.notes[t.id]=''; if(t.due) f.dueDates[t.id]=t.due;});
     return f;
   }
+
+  const subjectSelect = document.getElementById('subjectSelect');
+  subjects.forEach(subject=>{
+    const option = document.createElement('option');
+    option.value = subject.id;
+    option.textContent = subject.name;
+    subjectSelect.appendChild(option);
+  });
+
+  const calendarDateInput = document.getElementById('calendarDate');
+  const calendarMonthInput = document.getElementById('calendarMonth');
+  const now = new Date();
+  let selectedCalendarDay = now.toISOString().slice(0,10);
+  calendarDateInput.value = selectedCalendarDay;
+  calendarMonthInput.value = selectedCalendarDay.slice(0,7);
+  calendarDateInput.addEventListener('change', ()=>{selectedCalendarDay = calendarDateInput.value; render();});
+  calendarMonthInput.addEventListener('change', ()=>render());
 
   const weekSelect = document.getElementById('weekSelect');
   for(let i=1;i<=12;i++){const o=document.createElement('option');o.value=i;o.textContent=`Week ${i}`;weekSelect.appendChild(o);}
   weekSelect.addEventListener('change',()=>{currentWeek=parseInt(weekSelect.value);render();});
+  subjectSelect.addEventListener('change',()=>{currentSubjectId=subjectSelect.value;render();});
+
+
+
+  function formatDateDisplay(isoDate){
+    if(!isoDate) return '';
+    const d = new Date(isoDate + 'T00:00:00');
+    if(Number.isNaN(d.getTime())) return isoDate;
+    return d.toLocaleDateString('en-GB');
+  }
+
+
+  function getTaskDue(task, data){
+    if(data && data.dueDates && data.dueDates[task.id]) return data.dueDates[task.id];
+    return task.due || '';
+  }
+
+  function updateMonthCalendar(activeTasks, data){
+    const monthVal = calendarMonthInput.value || new Date().toISOString().slice(0,7);
+    const [yy, mm] = monthVal.split('-').map(Number);
+    const first = new Date(yy, mm-1, 1);
+    const daysInMonth = new Date(yy, mm, 0).getDate();
+    const startOffset = (first.getDay()+6)%7; // Monday-first
+
+    const grid = document.getElementById('monthGrid');
+    const tasksBox = document.getElementById('monthTasks');
+    grid.innerHTML='';
+
+    ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(d=>{
+      const h=document.createElement('div');
+      h.className='month-day-name';
+      h.textContent=d;
+      grid.appendChild(h);
+    });
+
+    for(let i=0;i<startOffset;i++){
+      const blank=document.createElement('div');
+      blank.className='month-day empty';
+      grid.appendChild(blank);
+    }
+
+    for(let d=1; d<=daysInMonth; d++){
+      const iso = `${yy}-${String(mm).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dueCount = activeTasks.filter(t=>getTaskDue(t,data)===iso).length;
+      const cell=document.createElement('button');
+      cell.type='button';
+      cell.className='month-day'+(selectedCalendarDay===iso?' selected':'');
+      cell.innerHTML=`<span class="month-day-num">${String(d).padStart(2,'0')}</span>${dueCount?`<span class="month-day-count">${dueCount} due</span>`:''}`;
+      cell.onclick=()=>{selectedCalendarDay=iso; calendarDateInput.value=iso; render();};
+      grid.appendChild(cell);
+    }
+
+    const dueToday = activeTasks.filter(t=>getTaskDue(t,data)===selectedCalendarDay);
+    if(!selectedCalendarDay){
+      tasksBox.innerHTML = '<div class="date-empty">Pick a day in the calendar.</div>';
+      return;
+    }
+    if(!dueToday.length){
+      tasksBox.innerHTML = `<div class="date-empty">No tasks due on ${formatDateDisplay(selectedCalendarDay)}.</div>`;
+      return;
+    }
+    tasksBox.innerHTML='';
+    dueToday.forEach(task=>{
+      const done = !!data.checks[task.id];
+      const row=document.createElement('div');
+      row.className='date-task-item';
+      row.innerHTML=`<strong>${task.label}</strong><span>${done?'✅ done':'⏳ to do'}</span>`;
+      tasksBox.appendChild(row);
+    });
+  }
+
+  function getDueState(dueStr){
+    if(!dueStr) return null;
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const dueDate = new Date(dueStr+'T00:00:00');
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const diffDays = Math.round((dueDate - today) / msPerDay);
+    if(diffDays < 0) return {text:`Overdue ${Math.abs(diffDays)}d`, cls:'overdue'};
+    if(diffDays === 0) return {text:'Due today', cls:'soon'};
+    if(diffDays <= 3) return {text:`Due in ${diffDays}d`, cls:'soon'};
+    return {text:`Due in ${diffDays}d`, cls:''};
+  }
+
+  function updateProgress(activeTasks, data){
+    const total = activeTasks.length;
+    const done = activeTasks.filter(task=>data.checks[task.id]).length;
+    const pct = total ? Math.round((done/total)*100) : 0;
+    document.getElementById('progressFill').style.width = `${pct}%`;
+    document.getElementById('progressText').textContent = `${done}/${total} complete, ${pct}%`;
+  }
+
+  function exportTrackerData(){
+    const payload = {version: 1, exportedAt: new Date().toISOString(), data: {}};
+    Object.keys(localStorage).forEach(k=>{
+      if(/-(w\d+)$/.test(k)) payload.data[k]=load(k);
+    });
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `semester-hub-backup-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    flashSaved('✓ Backup exported');
+  }
+
+  function importTrackerData(file){
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      try {
+        const parsed = JSON.parse(e.target.result);
+        const data = parsed.data || {};
+        Object.entries(data).forEach(([k,v])=>save(k,v));
+        render();
+        flashSaved('✓ Backup imported');
+      } catch {
+        flashSaved('⚠ Import failed: invalid JSON');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+
+  function updateCalendarTasks(activeTasks, data){
+    const list = document.getElementById('calendarTasks');
+    const selectedDate = calendarDateInput.value;
+    if(!selectedDate){
+      list.innerHTML = '<div class="date-empty">Pick a date to see due tasks.</div>';
+      return;
+    }
+    const matches = activeTasks.filter(task=>getTaskDue(task, data) === selectedDate);
+    if(!matches.length){
+      list.innerHTML = `<div class="date-empty">No due tasks on ${formatDateDisplay(selectedDate)} for this subject/week.</div>`;
+      return;
+    }
+    list.innerHTML = '';
+    matches.forEach(task=>{
+      const done = !!data.checks[task.id];
+      const row = document.createElement('div');
+      row.className = 'date-task-item';
+      row.innerHTML = `<strong>${task.label}</strong><span>${done ? '✅ done' : '⏳ to do'}</span>`;
+      list.appendChild(row);
+    });
+  }
 
   function render(){
+    const activeTasks = getCurrentTasks();
     const data = getWeekData(currentWeek);
     const grid = document.getElementById('trackerGrid');
     grid.innerHTML = '';
 
-    tasks.forEach(task=>{
+    activeTasks.forEach(task=>{
       const item = document.createElement('div');
       item.className = 'task-item';
       if(data.checks[task.id]) item.classList.add('checked');
@@ -355,10 +619,42 @@
       const tag = document.createElement('span');
       tag.className='tracker-tag '+task.tagClass;tag.textContent=task.tag;
 
-      main.appendChild(check);main.appendChild(label);main.appendChild(noteInd);main.appendChild(tag);main.appendChild(arrow);
+      const effectiveDue = getTaskDue(task, data);
+      const dueState = getDueState(effectiveDue);
+      if (dueState) {
+        const dueChip = document.createElement('span');
+        dueChip.className = 'due-chip' + (dueState.cls ? ` ${dueState.cls}` : '');
+        dueChip.textContent = dueState.text;
+        const dueDate = document.createElement('span');
+        dueDate.className = 'due-date';
+        dueDate.textContent = formatDateDisplay(effectiveDue);
+        main.appendChild(check);main.appendChild(label);main.appendChild(noteInd);main.appendChild(tag);main.appendChild(dueChip);main.appendChild(dueDate);main.appendChild(arrow);
+      } else {
+        main.appendChild(check);main.appendChild(label);main.appendChild(noteInd);main.appendChild(tag);main.appendChild(arrow);
+      }
 
       const notesPanel = document.createElement('div');
       notesPanel.className = 'task-notes';
+
+      const dueWrap = document.createElement('div');
+      dueWrap.className = 'task-due-edit';
+      const dueLabel = document.createElement('label');
+      dueLabel.textContent = 'Due date';
+      const dueInput = document.createElement('input');
+      dueInput.type = 'date';
+      dueInput.value = effectiveDue || '';
+      dueInput.onclick = (e)=>e.stopPropagation();
+      dueInput.onchange = ()=>{
+        data.dueDates = data.dueDates || {};
+        if(dueInput.value) data.dueDates[task.id] = dueInput.value; else delete data.dueDates[task.id];
+        save(weekKey(currentWeek),data);
+        selectedCalendarDay = dueInput.value || selectedCalendarDay;
+        if(dueInput.value) calendarDateInput.value = dueInput.value;
+        flashSaved();
+        render();
+      };
+      dueWrap.appendChild(dueLabel);
+      dueWrap.appendChild(dueInput);
 
       const noteEl = document.createElement('div');
       noteEl.className = 'rich-note';
@@ -382,7 +678,7 @@
       const hint = document.createElement('div');
       hint.className='note-hint';hint.textContent='Saves automatically · paste images with Ctrl+V';
 
-      notesPanel.appendChild(noteEl);notesPanel.appendChild(hint);
+      notesPanel.appendChild(dueWrap);notesPanel.appendChild(noteEl);notesPanel.appendChild(hint);
 
       main.onclick=()=>{item.classList.toggle('expanded');if(item.classList.contains('expanded'))setTimeout(()=>noteEl.focus(),100);};
 
@@ -391,7 +687,10 @@
 
     const weekNotesEl = document.getElementById('weekNotes');
     weekNotesEl.innerHTML = data.weekNotes || '';
-    updateActionItems(data);
+    updateActionItems(data, activeTasks);
+    updateProgress(activeTasks, data);
+    updateCalendarTasks(activeTasks, data);
+    updateMonthCalendar(activeTasks, data);
   }
 
   // Week notes
@@ -408,11 +707,11 @@
     },500);
   });
 
-  function updateActionItems(data){
+  function updateActionItems(data, activeTasks = getCurrentTasks()){
     const container=document.getElementById('actionItems');
     const list=document.getElementById('actionList');
     list.innerHTML='';let has=false;
-    tasks.forEach(task=>{
+    activeTasks.forEach(task=>{
       const noteHtml = data.notes[task.id];
       if(noteHtml){
         const tmp=document.createElement('div');tmp.innerHTML=noteHtml;
@@ -423,11 +722,19 @@
     container.classList.toggle('visible',has);
   }
 
-  function flashSaved(){
+  function flashSaved(msg='✓ Saved'){
     const el=document.getElementById('saveStatus');
-    el.textContent='✓ Saved';el.classList.add('saved');
+    el.textContent=msg;el.classList.add('saved');
     setTimeout(()=>{el.textContent='All changes save to this browser · supports pasted images';el.classList.remove('saved');},2000);
   }
+
+  document.getElementById('exportBtn').addEventListener('click', exportTrackerData);
+  const importFile = document.getElementById('importFile');
+  document.getElementById('importBtn').addEventListener('click', ()=>importFile.click());
+  importFile.addEventListener('change', ()=>{
+    if(importFile.files && importFile.files[0]) importTrackerData(importFile.files[0]);
+    importFile.value='';
+  });
 
   render();
 </script>
