@@ -195,7 +195,6 @@
   .month-task-item:last-child { border-bottom: none; }
   .month-task-item strong { color: var(--text); }
   .month-task-empty { font-size: 12px; color: var(--text-dim); font-style: italic; }
-  /* Weekly Timetable */
   .weekly-timetable { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-top: 24px; }
   .weekly-timetable-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
   .weekly-timetable-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
@@ -206,7 +205,6 @@
   .wt-clear-btn { padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 9px; cursor: pointer; transition: all 0.15s; display: none; }
   .wt-clear-btn:hover { border-color: var(--red); color: var(--red); }
   .wt-clear-btn.visible { display: inline-block; }
-  /* Grid view */
   .wt-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 16px; }
   .wt-grid-day { background: var(--surface-3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 8px; min-height: 80px; cursor: pointer; transition: all 0.15s; }
   .wt-grid-day:hover { border-color: var(--border-light); }
@@ -218,7 +216,6 @@
   .wt-grid-day-count { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); }
   .wt-grid-day-count.has-tasks { color: var(--green); }
   .wt-grid-task-pip { display: inline-block; width: 6px; height: 6px; border-radius: 2px; margin: 1px; }
-  /* Agenda view */
   .wt-agenda { margin-bottom: 8px; }
   .wt-agenda-day-heading { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--text); padding: 10px 0 6px; border-bottom: 1px solid var(--border); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
   .wt-agenda-day-heading .day-badge { font-size: 9px; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
@@ -402,13 +399,16 @@
     <div class="month-task-list" id="monthTasks"></div>
   </div>
   <div class="footer">Semester 1 · 2025 · Built for focus</div>
-</div><!-- /.container -->
-</div><!-- /#appContainer -->
+</div>
+</div>
 <script>
   // ── Supabase init ──
   const SUPA_URL = 'https://jagcftnqkvzvuigpzuqb.supabase.co';
-  const SUPA_KEY = 'sb_publishable_kYQxWxsT8Tw3GfUSO2AUmQ_YcmEIjtj';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImphZ2NmdG5xa3Z6dnVpZ3B6dXFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NzIzMTcsImV4cCI6MjA4NzQ0ODMxN30.lir0Uv_CQH_X8Idnhr6X19K7r2RMEgTA2qrNga0Zsbo';
   const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+  // ── Current user ID (set after auth) ──
+  let currentUserId = null;
 
   // ── In-memory cache (populated from Supabase on login) ──
   let dbCache = {};
@@ -421,8 +421,13 @@
   function save(k,v){
     dbCache[k] = v;
     try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){ console.warn('localStorage full',e); }
-    supa.from('hub_data').upsert({ key:k, value:v, updated_at: new Date().toISOString() })
-      .then(({error})=>{ if(error) console.warn('Supabase save error',error); });
+    if(!currentUserId) return; // not logged in yet
+    supa.from('hub_data').upsert({
+      key: k,
+      value: v,
+      user_id: currentUserId,
+      updated_at: new Date().toISOString()
+    }).then(({error})=>{ if(error) console.warn('Supabase save error',error); });
   }
 
   async function loadAllFromSupabase(){
@@ -444,14 +449,24 @@
 
   // onAuthStateChange fires for: existing session restore, magic link redirect, new login
   supa.auth.onAuthStateChange(async (event, session)=>{
-    if(session){ await loadAllFromSupabase(); showApp(); }
+    if(session){
+      currentUserId = session.user.id;
+      await loadAllFromSupabase();
+      showApp();
+    }
   });
 
   // Fallback: if no auth event after 1s, show login
   setTimeout(async ()=>{
     if(!appLoaded){
       const { data:{ session } } = await supa.auth.getSession();
-      if(!session) document.getElementById('authOverlay').classList.remove('hidden');
+      if(session){
+        currentUserId = session.user.id;
+        await loadAllFromSupabase();
+        showApp();
+      } else {
+        document.getElementById('authOverlay').classList.remove('hidden');
+      }
     }
   }, 1000);
 
@@ -464,9 +479,19 @@
     btn.disabled = true;
     msg.textContent = isSignUp ? 'Creating account…' : 'Signing in…'; msg.className = 'auth-msg';
     if(isSignUp){
-      const { error } = await supa.auth.signUp({ email, password });
-      if(error){ msg.textContent = error.message; msg.className='auth-msg err'; btn.disabled=false; }
-      else { msg.textContent = '✓ Account created — signing you in…'; msg.className='auth-msg ok'; }
+      const { data: signUpData, error } = await supa.auth.signUp({ email, password });
+      if(error){ msg.textContent = error.message; msg.className='auth-msg err'; btn.disabled=false; return; }
+      // If Supabase returned a session, onAuthStateChange will handle it.
+      // If not (email confirmation required), sign in explicitly.
+      if(!signUpData.session){
+        msg.textContent = '✓ Account created — signing you in…'; msg.className='auth-msg ok';
+        const { error: signInError } = await supa.auth.signInWithPassword({ email, password });
+        if(signInError){
+          msg.textContent = 'Account created but sign-in failed: ' + signInError.message + '. Check your email for a confirmation link, then sign in.';
+          msg.className='auth-msg err'; btn.disabled=false;
+        }
+        // else onAuthStateChange will fire and call showApp()
+      }
     } else {
       const { error } = await supa.auth.signInWithPassword({ email, password });
       if(error){ msg.textContent = error.message; msg.className='auth-msg err'; btn.disabled=false; }
@@ -668,35 +693,30 @@
     const [yr, mo] = monthInput.value.split('-').map(Number);
     const firstDay = new Date(yr, mo-1, 1);
     const lastDay = new Date(yr, mo, 0);
-    const startDow = firstDay.getDay() || 7; // Mon=1
+    const startDow = firstDay.getDay() || 7;
 
-    // Collect all due dates for all subjects/weeks this month
     const dueTasks = [];
     activeTasks.forEach(t=>{
       const due = getTaskDue(t, data);
       if(due && due.startsWith(monthInput.value)) dueTasks.push({task:t, due});
     });
 
-    // Count per day
     const countByDay = {};
     dueTasks.forEach(dt=>{ countByDay[dt.due] = (countByDay[dt.due]||0)+1; });
 
     grid.innerHTML = '';
-    // Day headers
     ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(d=>{
       const h = document.createElement('div');
       h.className = 'month-day-header'; h.textContent = d;
       grid.appendChild(h);
     });
 
-    // Pad start
     for(let i=1; i<startDow; i++){
       const empty = document.createElement('div');
       empty.className = 'month-day other-month';
       grid.appendChild(empty);
     }
 
-    // Days
     for(let d=1; d<=lastDay.getDate(); d++){
       const dateStr = `${yr}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const cell = document.createElement('div');
@@ -713,7 +733,6 @@
       grid.appendChild(cell);
     }
 
-    // Tasks for selected day
     taskList.innerHTML = '';
     const dayTasks = dueTasks.filter(dt=>dt.due === selectedCalendarDay);
     if(dayTasks.length === 0){
@@ -730,26 +749,24 @@
 
   const calendarMonthInput = document.getElementById('calendarMonth');
   const now = new Date();
-  let selectedCalendarDay = now.toISOString().slice(0,10);
+  let selectedCalendarDay = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   calendarMonthInput.value = selectedCalendarDay.slice(0,7);
   calendarMonthInput.addEventListener('change', ()=>render());
 
-  // Weekly timetable state
-  let wtView = 'grid'; // 'grid' or 'agenda'
-  let wtFilterDay = null; // null = no filter, string = ISO date
-  const todayStr = now.toISOString().slice(0,10);
+  let wtView = 'grid';
+  let wtFilterDay = null;
+  const todayStr = selectedCalendarDay;
 
   document.getElementById('wtTabGrid').addEventListener('click', ()=>{ wtView='grid'; renderWt(); });
   document.getElementById('wtTabAgenda').addEventListener('click', ()=>{ wtView='agenda'; renderWt(); });
   document.getElementById('wtClearFilter').addEventListener('click', ()=>{ wtFilterDay=null; renderWt(); });
 
-  function renderWt(){ // lightweight re-render just for weekly timetable
+  function renderWt(){
     const activeTasks = getCurrentTasks();
     const data = getWeekData(currentWeek);
     updateWeeklyTimetable(getAllDueTasks(), data);
   }
 
-  // Scan all subjects × weeks 1-12 to collect every task with a due date
   function getAllDueTasks(){
     const all = [];
     const origSubject = currentSubjectId;
@@ -794,17 +811,15 @@
     const filteredEl = document.getElementById('wtFilteredTasks');
     const clearBtn = document.getElementById('wtClearFilter');
 
-    // Tab toggle
     document.getElementById('wtTabGrid').classList.toggle('active', wtView==='grid');
     document.getElementById('wtTabAgenda').classList.toggle('active', wtView==='agenda');
     gridEl.style.display = wtView==='grid' ? 'grid' : 'none';
     agendaEl.style.display = wtView==='agenda' ? 'block' : 'none';
     clearBtn.classList.toggle('visible', !!wtFilterDay);
 
-    // Build 7-day window starting Monday of this week
     const today = new Date();
     today.setHours(0,0,0,0);
-    const dayOfWeek = today.getDay() || 7; // Mon=1
+    const dayOfWeek = today.getDay() || 7;
     const monday = new Date(today);
     monday.setDate(today.getDate() - (dayOfWeek - 1));
 
@@ -814,7 +829,6 @@
       d.setDate(monday.getDate()+i);
       const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
       const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      const dayNamesFull = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       const isToday = iso === todayStr;
       const diffFromToday = Math.round((d - today) / (24*60*60*1000));
       let friendlyLabel;
@@ -824,13 +838,11 @@
       days.push({ date: d, iso, dayName: dayNames[d.getDay()], dayNum: d.getDate(), isToday, friendlyLabel, diffFromToday });
     }
 
-    // Index tasks by day
     const tasksByDay = {};
     days.forEach(d=>{ tasksByDay[d.iso] = []; });
     allDue.forEach(dt=>{
       if(tasksByDay[dt.due]) tasksByDay[dt.due].push(dt);
     });
-    // Sort: incomplete first, then alphabetical
     Object.values(tasksByDay).forEach(arr=>{
       arr.sort((a,b)=>{
         if(a.completed !== b.completed) return a.completed ? 1 : -1;
@@ -838,7 +850,6 @@
       });
     });
 
-    // ── Grid view ──
     gridEl.innerHTML = '';
     days.forEach(day=>{
       const cell = document.createElement('div');
@@ -859,7 +870,6 @@
       countEl.className = 'wt-grid-day-count' + (tasks.length ? ' has-tasks' : '');
       if(tasks.length === 0) countEl.textContent = '—';
       else {
-        // Show coloured pips for each task
         tasks.forEach(dt=>{
           const pip = document.createElement('span');
           pip.className = 'wt-grid-task-pip';
@@ -881,7 +891,6 @@
       gridEl.appendChild(cell);
     });
 
-    // ── Agenda view ──
     agendaEl.innerHTML = '';
     let hasAnyTasks = false;
     days.forEach(day=>{
@@ -933,7 +942,6 @@
       agendaEl.innerHTML = '<div class="wt-empty">No upcoming due dates in the next 7 days.</div>';
     }
 
-    // ── Filtered tasks (when clicking a grid day) ──
     filteredEl.innerHTML = '';
     if(wtFilterDay){
       const filterTasks = allDue.filter(dt=>dt.due === wtFilterDay);
@@ -1071,7 +1079,6 @@
     updateMonthCalendar(activeTasks, data);
   }
 
-  // Week notes
   const weekNotesEl = document.getElementById('weekNotes');
   weekNotesEl.addEventListener('paste',(e)=>handlePaste(e,weekNotesEl));
   let wnTimeout;
