@@ -263,6 +263,9 @@
     <div style="margin-top:10px;">
       <button id="authToggle" style="background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;text-decoration:underline;">No account? Create one</button>
     </div>
+    <div style="margin-top:8px;">
+      <button id="authReset" style="background:none;border:none;color:var(--text-dim);font-size:11px;cursor:pointer;text-decoration:underline;">Having login issues? Reset cached session</button>
+    </div>
     <div id="authMsg" class="auth-msg"></div>
   </div>
 </div>
@@ -439,6 +442,17 @@
   // ── Auth ──
   let appLoaded = false;
 
+  function clearStaleAuth(){
+    const authKeyPrefix = `sb-${new URL(SUPA_URL).hostname.split('.')[0]}-auth-token`;
+    [localStorage, sessionStorage].forEach((store)=>{
+      for(const key of Object.keys(store)){
+        if(key.startsWith('sb-') || key.includes(authKeyPrefix)){
+          store.removeItem(key);
+        }
+      }
+    });
+  }
+
   function showApp(){
     if(appLoaded) return;
     appLoaded = true;
@@ -459,7 +473,11 @@
   // Fallback: if no auth event after 1s, show login
   setTimeout(async ()=>{
     if(!appLoaded){
-      const { data:{ session } } = await supa.auth.getSession();
+      const { data:{ session }, error } = await supa.auth.getSession();
+      if(error){
+        console.warn('Supabase session restore failed; clearing stale auth cache', error.message);
+        clearStaleAuth();
+      }
       if(session){
         currentUserId = session.user.id;
         await loadAllFromSupabase();
@@ -500,6 +518,11 @@
 
   let isSignUp = false;
   document.getElementById('authPassword').addEventListener('keydown', (e)=>{ if(e.key==='Enter') document.getElementById('authBtn').click(); });
+  document.getElementById('authReset').addEventListener('click', ()=>{
+    clearStaleAuth();
+    document.getElementById('authMsg').textContent = 'Cached session cleared. Try signing in again.';
+    document.getElementById('authMsg').className = 'auth-msg ok';
+  });
   document.getElementById('authToggle').addEventListener('click', ()=>{
     isSignUp = !isSignUp;
     document.getElementById('authBtn').textContent = isSignUp ? 'Create account' : 'Sign in';
