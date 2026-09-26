@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foundations 2 — Daily Drill</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  :root {
+    --bg: #2b2d31; --surface: #333538; --surface-2: #3a3c40; --surface-3: #2f3136;
+    --border: #4a4d54; --border-light: #56595f;
+    --text: #e8e9ed; --text-muted: #9b9fa8; --text-dim: #72767d;
+    --accent: #6366f1; --accent-bg: rgba(99,102,241,0.1); --accent-border: rgba(99,102,241,0.3);
+    --green: #34d399; --green-bg: rgba(52,211,153,0.1); --green-border: rgba(52,211,153,0.3);
+    --yellow: #fbbf24; --yellow-bg: rgba(251,191,36,0.1); --yellow-border: rgba(251,191,36,0.3);
+    --red: #f87171; --red-bg: rgba(248,113,113,0.1); --red-border: rgba(248,113,113,0.3);
+    --coral: #f97066;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding:40px 24px;}
+  .container{max-width:800px;margin:0 auto;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);text-decoration:none;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;margin-bottom:24px;transition:color 0.2s;}
+  .back-link:hover{color:var(--text);}
+  header{margin-bottom:32px;}
+  .page-tag{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--coral);margin-bottom:8px;}
+  h1{font-size:26px;font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;}
+  .subtitle{color:var(--text-muted);font-size:13px;margin-bottom:20px;line-height:1.5;}
+  .progress-bar-container{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:32px;}
+  .progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .progress-header span{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:0.5px;}
+  .progress-track{height:8px;background:var(--surface-3);border-radius:4px;overflow:hidden;display:flex;gap:2px;}
+  .progress-fill-green{background:var(--green);height:100%;transition:width 0.4s ease;border-radius:4px;}
+  .progress-fill-yellow{background:var(--yellow);height:100%;transition:width 0.4s ease;border-radius:4px;}
+  .progress-fill-red{background:var(--red);height:100%;transition:width 0.4s ease;border-radius:4px;}
+  .progress-stats{display:flex;gap:16px;margin-top:10px;}
+  .stat{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);}
+  .stat-dot{width:8px;height:8px;border-radius:2px;}
+  .problem-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden;}
+  .section-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background 0.15s;}
+  .section-header:hover{background:var(--surface-2);}
+  .section-title-area{display:flex;align-items:center;gap:12px;}
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;color:var(--coral);letter-spacing:0.5px;background:rgba(249,112,102,0.1);padding:4px 10px;border-radius:5px;}
+  .section-name{font-size:14px;font-weight:600;}
+  .section-right{display:flex;align-items:center;gap:10px;}
+  .section-badges{display:flex;gap:4px;}
+  .mini-badge{width:8px;height:8px;border-radius:2px;}
+  .expand-icon{font-size:10px;color:var(--text-dim);transition:transform 0.2s;}
+  .problem-section.open .expand-icon{transform:rotate(90deg);}
+  .section-body{max-height:0;overflow:hidden;transition:max-height 0.3s ease;}
+  .problem-section.open .section-body{max-height:5000px;}
+  .section-content{padding:0 20px 20px;border-top:1px solid var(--border);}
+  .problem{padding:16px 0;border-bottom:1px solid rgba(74,77,84,0.5);}
+  .problem:last-child{border-bottom:none;}
+  .problem-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+  .problem-prompt{font-size:14px;line-height:1.6;margin-bottom:10px;}
+  .section-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  .section-title-area,.section-right{min-width:0;}
+  @media(max-width:520px){body{padding:24px 16px;}.section-header{padding:14px 12px;}.section-title-area{gap:8px;}.section-name{font-size:13px;}.section-right{gap:6px;}.section-badges{flex-wrap:wrap;max-width:20px;}.section-content{padding:0 12px 16px;}.section-num{padding:4px 6px;}}
+  .problem-math{font-size:16px;margin-bottom:14px;line-height:1.8;color:var(--text);overflow-x:auto;}
+  .problem-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .rating-btn{padding:6px 14px;border-radius:6px;border:2px solid var(--border);background:transparent;cursor:pointer;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;transition:all 0.15s;color:var(--text-muted);}
+  .rating-btn:hover{border-color:var(--border-light);}
+  .rating-btn.green-active{background:var(--green-bg);border-color:var(--green-border);color:var(--green);}
+  .rating-btn.yellow-active{background:var(--yellow-bg);border-color:var(--yellow-border);color:var(--yellow);}
+  .rating-btn.red-active{background:var(--red-bg);border-color:var(--red-border);color:var(--red);}
+  .note-toggle{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;transition:all 0.15s;margin-left:auto;}
+  .note-toggle:hover{border-color:var(--accent-border);color:var(--text-muted);}
+  .note-toggle.has-note{color:var(--yellow);border-color:var(--yellow-border);}
+  .problem-note{max-height:0;overflow:hidden;transition:max-height 0.3s ease,margin 0.3s ease;margin-top:0;}
+  .problem-note.open{max-height:400px;margin-top:12px;}
+  .rich-note{width:100%;min-height:50px;padding:10px 12px;background:var(--surface-3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.5;outline:none;overflow-y:auto;max-height:300px;word-wrap:break-word;}
+  .rich-note:focus{border-color:var(--accent);}
+  .rich-note:empty::before{content:attr(data-placeholder);color:var(--text-dim);pointer-events:none;}
+  .rich-note img{max-width:100%;border-radius:6px;margin:6px 0;display:block;}
+  .note-meta{font-size:10px;color:var(--text-dim);margin-top:6px;font-family:'JetBrains Mono',monospace;}
+  .summary-section{margin-top:32px;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+  .summary-section h3{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);margin-bottom:14px;}
+  .summary-list{list-style:none;}
+  .summary-list li{font-size:12px;color:var(--text-muted);padding:6px 0;border-bottom:1px solid rgba(74,77,84,0.3);line-height:1.5;}
+  .summary-list li:last-child{border-bottom:none;}
+  .summary-list li strong{color:var(--text);}
+  .summary-empty{font-size:12px;color:var(--text-dim);font-style:italic;}
+  .save-indicator{position:fixed;bottom:20px;right:20px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);background:var(--surface);border:1px solid var(--green-border);border-radius:6px;padding:8px 14px;opacity:0;transition:opacity 0.3s;pointer-events:none;}
+  .save-indicator.show{opacity:1;}
+  .footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);text-align:center;color:var(--text-dim);font-size:11px;font-family:'JetBrains Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="index.html" class="back-link">← Back to Hub</a>
+  <header>
+    <div class="page-tag">MAT1001 · Daily active recall</div>
+    <h1>Foundations 2 — Daily Drill</h1>
+    <p class="subtitle">14 Level 1–2 checks + 3 optional stretch questions. Work cold, without notes. Rate each: ✅ got it, 🟡 shaky, 🔴 stuck. Add notes on what tripped you up. Paste screenshots with Ctrl+V.</p>
+    <p class="subtitle"><strong>Daily route · 10–20 minutes:</strong> Choose one check from each of sections 01–07; alternate the pair next time. Explain your reasoning before rating. If a check is shaky or stuck, review it after your attempt and retry cold next session.</p>
+    <p class="subtitle"><strong>Then stretch:</strong> Once today’s foundation checks are solid, try 1–2 questions from section 08. Ratings and notes record your latest attempt; update them as you improve.</p>
+  </header>
+  <div class="progress-bar-container">
+    <div class="progress-header"><span>PROGRESS</span><span id="progressText">0 / 0 rated</span></div>
+    <div class="progress-track">
+      <div class="progress-fill-green" id="barGreen" style="width:0"></div>
+      <div class="progress-fill-yellow" id="barYellow" style="width:0"></div>
+      <div class="progress-fill-red" id="barRed" style="width:0"></div>
+    </div>
+    <div class="progress-stats">
+      <div class="stat"><div class="stat-dot" style="background:var(--green)"></div><span id="countGreen">0</span> got it</div>
+      <div class="stat"><div class="stat-dot" style="background:var(--yellow)"></div><span id="countYellow">0</span> shaky</div>
+      <div class="stat"><div class="stat-dot" style="background:var(--red)"></div><span id="countRed">0</span> stuck</div>
+    </div>
+  </div>
+  <div id="problemSections"></div>
+  <div class="summary-section">
+    <h3>⚡ Areas to Action</h3>
+    <div id="actionSummary"><p class="summary-empty">Rate problems and add notes — action items will appear here.</p></div>
+  </div>
+  <div class="save-indicator" id="saveIndicator">✓ Saved</div>
+  <div class="footer">MAT1001 · Foundations 2 · Do them cold, rate honestly</div>
+</div>
+<script>
+  function compressImage(dataUrl,maxW,quality,cb){
+    const img=new Image();
+    img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxW){h=h*maxW/w;w=maxW;}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);cb(c.toDataURL('image/jpeg',quality));};
+    img.src=dataUrl;
+  }
+  function handlePaste(e,el){
+    const items=(e.clipboardData||e.originalEvent.clipboardData).items;
+    for(const item of items){
+      if(item.type.indexOf('image')!==-1){
+        e.preventDefault();
+        const blob=item.getAsFile();const reader=new FileReader();
+        reader.onload=(ev)=>{
+          compressImage(ev.target.result,600,0.65,(compressed)=>{
+            const img=document.createElement('img');img.src=compressed;
+            const sel=window.getSelection();
+            if(sel.rangeCount){sel.getRangeAt(0).insertNode(img);sel.collapseToEnd();}
+            else{el.appendChild(img);}
+            el.dispatchEvent(new Event('input'));
+          });
+        };
+        reader.readAsDataURL(blob);return;
+      }
+    }
+  }
+
+  const sections=[
+  {
+    "id": "notation",
+    "num": "01",
+    "name": "Notation · Level 1–2",
+    "problems": [
+      {
+        "id": "notation-a",
+        "label": "1 · Read the symbols",
+        "prompt": "In words, distinguish the term from its square. Then evaluate both when k = 2.",
+        "latex": "a_k=3k+1,\\qquad a_k\\quad\\text{and}\\quad a_k^2"
+      },
+      {
+        "id": "notation-b",
+        "label": "2 · Elements and subsets",
+        "prompt": "Mark each statement true or false. Explain the difference between membership and a subset.",
+        "latex": "A=\\{1,2,3\\}:\\qquad 2\\in A,\\quad \\{2\\}\\in A,\\quad \\{2\\}\\subseteq A"
+      }
+    ]
+  },
+  {
+    "id": "solutions",
+    "num": "02",
+    "name": "Solution sets · Level 1–2",
+    "problems": [
+      {
+        "id": "solutions-a",
+        "label": "3 · All, some or none?",
+        "prompt": "Solve each equation over the real numbers. Write each solution set using set notation.",
+        "latex": "2(x+1)=2x+2\\qquad\\text{and}\\qquad 2(x+1)=2x+5"
+      },
+      {
+        "id": "solutions-b",
+        "label": "4 · Absolute value",
+        "prompt": "Solve the inequality. Give the solution in interval notation and mark it on a number line.",
+        "latex": "|x-2|\\leq 4"
+      }
+    ]
+  },
+  {
+    "id": "free-variables",
+    "num": "03",
+    "name": "Free variables · Level 1–2",
+    "problems": [
+      {
+        "id": "free-variables-a",
+        "label": "5 · Parametric solutions",
+        "prompt": "Take z as a free variable. Express x and y in terms of a real parameter, then describe the solution set geometrically.",
+        "latex": "x+z=3,\\qquad y-2z=-1"
+      },
+      {
+        "id": "free-variables-b",
+        "label": "6 · Consistency check",
+        "prompt": "How many solutions does this system have? Explain whether a free variable can describe any solutions.",
+        "latex": "x+y=2,\\qquad 2x+2y=5"
+      }
+    ]
+  },
+  {
+    "id": "geometry",
+    "num": "04",
+    "name": "Geometry and planes · Level 1–2",
+    "problems": [
+      {
+        "id": "geometry-a",
+        "label": "7 · Read a plane",
+        "prompt": "State a normal vector to the plane. Does the point P lie on it? Show the substitution.",
+        "latex": "2x-y+3z=6,\\qquad P=(1,2,2)"
+      },
+      {
+        "id": "geometry-b",
+        "label": "8 · Read a line",
+        "prompt": "State a point and a direction vector for this line. Find the point at t = 2.",
+        "latex": "\\mathbf r=(1,0,-2)+t(2,-1,3),\\qquad t\\in\\mathbb R"
+      }
+    ]
+  },
+  {
+    "id": "proofs",
+    "num": "05",
+    "name": "Proofs and logic · Level 1–2",
+    "problems": [
+      {
+        "id": "proofs-a",
+        "label": "9 · Negate a claim",
+        "prompt": "Negate this entire statement using quantifiers. Do not just negate its conclusion.",
+        "latex": "\\forall n\\in\\mathbb Z,\\quad n^2\\text{ even}\\ \\Longrightarrow\\ n\\text{ even}"
+      },
+      {
+        "id": "proofs-b",
+        "label": "10 · Set up induction",
+        "prompt": "For a proof by induction starting at n = 1, check the base case, state the inductive hypothesis, and write the next case you must prove. Stop before proving the step.",
+        "latex": "1+2+\\cdots+n=\\frac{n(n+1)}{2}"
+      }
+    ]
+  },
+  {
+    "id": "functions",
+    "num": "06",
+    "name": "Functions and inverses · Level 1–2",
+    "problems": [
+      {
+        "id": "functions-a",
+        "label": "11 · Domain and range",
+        "prompt": "Find the largest real domain and the corresponding range. Use interval notation.",
+        "latex": "f(x)=\\sqrt{x-1}"
+      },
+      {
+        "id": "functions-b",
+        "label": "12 · Undo a function",
+        "prompt": "Find the inverse, state its domain and range, and verify your answer by composing it with f.",
+        "latex": "f:\\mathbb R\\to\\mathbb R,\\qquad f(x)=3x-4"
+      }
+    ]
+  },
+  {
+    "id": "sequences",
+    "num": "07",
+    "name": "Sequences and sums · Level 1–2",
+    "problems": [
+      {
+        "id": "sequences-a",
+        "label": "13 · Term versus partial sum",
+        "prompt": "Find a₁, a₄ and S₄. Explain in one sentence how a₄ differs from S₄.",
+        "latex": "a_n=2n-1\\ (n\\geq1),\\qquad S_N=\\sum_{k=1}^{N}a_k"
+      },
+      {
+        "id": "sequences-b",
+        "label": "14 · Geometric sequence",
+        "prompt": "Find a₂, a₃ and the sum of the first three terms. State the common ratio.",
+        "latex": "a_1=8,\\qquad a_{n+1}=\\frac12 a_n\\quad(n\\geq1)"
+      }
+    ]
+  },
+  {
+    "id": "stretch",
+    "num": "08",
+    "name": "Optional stretch · Level 3–4",
+    "problems": [
+      {
+        "id": "stretch-a",
+        "label": "15 · Restricted quadratic inverse",
+        "prompt": "Find the inverse and its domain and range. Explain why the domain of f determines which square-root branch you use.",
+        "latex": "f(x)=x^2-4x+1,\\qquad x\\in[2,\\infty)"
+      },
+      {
+        "id": "stretch-b",
+        "label": "16 · Line meets plane",
+        "prompt": "Find the intersection point of the line and plane. Check your point in both equations.",
+        "latex": "\\mathbf r=(1,0,1)+t(1,2,-1),\\qquad x+y+z=6"
+      },
+      {
+        "id": "stretch-c",
+        "label": "17 · A short proof",
+        "prompt": "Prove this identity by induction for every integer n ≥ 1. Clearly identify the base case, hypothesis and inductive step.",
+        "latex": "\\sum_{k=1}^{n}(2k-1)=n^2"
+      }
+    ]
+  }
+];
+
+  const totalProblems=sections.reduce((n,s)=>n+s.problems.length,0);
+  const STORAGE_KEY='foundations-2';
+  function loadData(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{}}catch{return {}}}
+  function saveData(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d));showSaved();}
+  function showSaved(){const el=document.getElementById('saveIndicator');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1500);}
+
+  let data=loadData();
+  const openSections=new Set(['notation']);
+
+  function render(){
+    const container=document.getElementById('problemSections');
+    container.innerHTML='';
+
+    sections.forEach(section=>{
+      const sec=document.createElement('div');sec.className='problem-section';
+      sec.classList.toggle('open',openSections.has(section.id));
+      const header=document.createElement('div');header.className='section-header';
+      const titleArea=document.createElement('div');titleArea.className='section-title-area';
+      titleArea.innerHTML=`<span class="section-num">${section.num}</span><span class="section-name">${section.name}</span>`;
+      const right=document.createElement('div');right.className='section-right';
+      const badges=document.createElement('div');badges.className='section-badges';
+      section.problems.forEach(p=>{
+        const b=document.createElement('div');b.className='mini-badge';
+        const r=data[p.id]?.rating;
+        b.style.background=r==='green'?'var(--green)':r==='yellow'?'var(--yellow)':r==='red'?'var(--red)':'var(--border)';
+        badges.appendChild(b);
+      });
+      const arrow=document.createElement('span');arrow.className='expand-icon';arrow.textContent='▶';
+      right.appendChild(badges);right.appendChild(arrow);
+      header.appendChild(titleArea);header.appendChild(right);
+      header.tabIndex=0;header.setAttribute('role','button');
+      header.setAttribute('aria-expanded',String(openSections.has(section.id)));
+      header.onclick=()=>{
+        const open=sec.classList.toggle('open');
+        if(open)openSections.add(section.id);else openSections.delete(section.id);
+        header.setAttribute('aria-expanded',String(open));
+      };
+      header.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();header.click();}};
+
+      const body=document.createElement('div');body.className='section-body';
+      const content=document.createElement('div');content.className='section-content';
+
+      section.problems.forEach(prob=>{
+        const pDiv=document.createElement('div');pDiv.className='problem';
+        const label=document.createElement('div');label.className='problem-label';label.textContent=prob.label;
+        const prompt=document.createElement('p');prompt.className='problem-prompt';prompt.textContent=prob.prompt;
+        const mathDiv=document.createElement('div');mathDiv.className='problem-math';
+        try{katex.render(prob.latex,mathDiv,{displayMode:true,throwOnError:false});}catch{mathDiv.textContent=prob.latex;}
+
+        const controls=document.createElement('div');controls.className='problem-controls';
+        const pData=data[prob.id]||{rating:null,note:''};
+
+        ['green','yellow','red'].forEach(color=>{
+          const btn=document.createElement('button');btn.className='rating-btn';
+          if(pData.rating===color)btn.classList.add(color+'-active');
+          btn.textContent=color==='green'?'✅ Got it':color==='yellow'?'🟡 Shaky':'🔴 Stuck';
+          btn.onclick=()=>{
+            if(!data[prob.id])data[prob.id]={rating:null,note:''};
+            data[prob.id].rating=data[prob.id].rating===color?null:color;
+            saveData(data);render();
+          };
+          controls.appendChild(btn);
+        });
+
+        const noteBtn=document.createElement('button');noteBtn.className='note-toggle';
+        if(pData.note){const tmp=document.createElement('div');tmp.innerHTML=pData.note;if(tmp.textContent.trim()||tmp.querySelector('img'))noteBtn.classList.add('has-note');}
+        noteBtn.textContent=noteBtn.classList.contains('has-note')?'● note':'+ note';
+
+        controls.appendChild(noteBtn);
+
+        const notePanel=document.createElement('div');notePanel.className='problem-note';
+
+        const noteEl=document.createElement('div');
+        noteEl.className='rich-note';
+        noteEl.contentEditable='true';
+        noteEl.setAttribute('data-placeholder','What tripped you up? Paste a screenshot of your working...');
+        noteEl.innerHTML=pData.note||'';
+        noteEl.addEventListener('paste',(e)=>handlePaste(e,noteEl));
+
+        let noteTimeout;
+        noteEl.addEventListener('input',()=>{
+          clearTimeout(noteTimeout);
+          noteTimeout=setTimeout(()=>{
+            if(!data[prob.id])data[prob.id]={rating:null,note:''};
+            data[prob.id].note=noteEl.innerHTML;
+            saveData(data);
+            const hasContent=!!noteEl.textContent.trim()||!!noteEl.querySelector('img');
+            noteBtn.classList.toggle('has-note',hasContent);
+            noteBtn.textContent=hasContent?'● note':'+ note';
+            updateProgress();updateSummary();
+          },500);
+        });
+
+        noteBtn.onclick=()=>{
+          notePanel.classList.toggle('open');
+          if(notePanel.classList.contains('open'))setTimeout(()=>noteEl.focus(),100);
+        };
+
+        const meta=document.createElement('div');meta.className='note-meta';meta.textContent='Paste images with Ctrl+V · saves automatically';
+        notePanel.appendChild(noteEl);notePanel.appendChild(meta);
+
+        pDiv.appendChild(label);pDiv.appendChild(prompt);pDiv.appendChild(mathDiv);pDiv.appendChild(controls);pDiv.appendChild(notePanel);
+        content.appendChild(pDiv);
+      });
+
+      body.appendChild(content);sec.appendChild(header);sec.appendChild(body);container.appendChild(sec);
+    });
+
+    updateProgress();updateSummary();
+  }
+
+  function updateProgress(){
+    let g=0,y=0,r=0;
+    sections.forEach(s=>s.problems.forEach(p=>{const rt=data[p.id]?.rating;if(rt==='green')g++;else if(rt==='yellow')y++;else if(rt==='red')r++;}));
+    const rated=g+y+r;
+    document.getElementById('progressText').textContent=`${rated} / ${totalProblems} rated`;
+    document.getElementById('countGreen').textContent=g;
+    document.getElementById('countYellow').textContent=y;
+    document.getElementById('countRed').textContent=r;
+    const pct=(n)=>rated>0?(n/totalProblems*100)+'%':'0';
+    document.getElementById('barGreen').style.width=pct(g);
+    document.getElementById('barYellow').style.width=pct(y);
+    document.getElementById('barRed').style.width=pct(r);
+  }
+
+  function updateSummary(){
+    const container=document.getElementById('actionSummary');const items=[];
+    sections.forEach(s=>s.problems.forEach(p=>{
+      const d=data[p.id];
+      if(d&&(d.rating==='yellow'||d.rating==='red'||d.note)){
+        const tmp=document.createElement('div');tmp.innerHTML=d.note||'';
+        const txt=tmp.textContent.trim();const hasImg=!!tmp.querySelector('img');
+        const icon=d.rating==='red'?'🔴':d.rating==='yellow'?'🟡':'📝';
+        const note=txt?` — ${txt}`:(hasImg?' — [has screenshot]':'');
+        items.push({icon,section:s.name,label:p.label,note});
+      }
+    }));
+    if(items.length===0){container.innerHTML='<p class="summary-empty">Rate problems and add notes — action items will appear here.</p>';return;}
+    const ul=document.createElement('ul');ul.className='summary-list';
+    items.forEach(item=>{const li=document.createElement('li');li.innerHTML=`${item.icon} <strong>${item.section} ${item.label}</strong>${item.note}`;ul.appendChild(li);});
+    container.innerHTML='';container.appendChild(ul);
+  }
+
+  render();
+</script>
+</body>
+</html>
+
